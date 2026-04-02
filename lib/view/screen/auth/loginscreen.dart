@@ -4,7 +4,7 @@ import 'package:transport_project/controller/auth/login_controller.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
 import 'package:transport_project/core/functions/vaildinput.dart';
 import 'package:transport_project/core/constant/routes.dart';
-import 'package:transport_project/core/localization/local_controller.dart';
+// import 'package:transport_project/core/localization/local_controller.dart';
 import 'package:transport_project/view/widget/auth/custom_auth_button_widget.dart';
 import 'package:transport_project/view/widget/auth/custom_label_widget.dart';
 import 'package:transport_project/view/widget/auth/custom_passtext_filed.dart';
