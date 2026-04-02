@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:transport_project/controller/auth/resetpassword_controller.dart';
+import 'package:transport_project/controller/auth/changeinitailpassword_controller.dart';
 import 'package:transport_project/core/class/statusrequest.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
-import 'package:transport_project/core/functions/vaildinput.dart';
 import 'package:transport_project/view/widget/auth/custom_appar_widget.dart';
 import 'package:transport_project/view/widget/auth/custom_auth_button_widget.dart';
 import 'package:transport_project/view/widget/auth/custom_label_widget.dart';
 import 'package:transport_project/view/widget/auth/custom_passtext_filed.dart';
 import 'package:transport_project/view/widget/auth/custom_strength_meter%20.dart';
+import 'package:transport_project/view/widget/auth/custom_text_filed.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
-  const ResetPasswordScreen({super.key});
+class ChangeInitialPasswordScreen extends StatelessWidget {
+  const ChangeInitialPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GetBuilder<ResetPasswordControllerImp>(
-      init: ResetPasswordControllerImp(),
+    return GetBuilder<ChangeInitialPasswordControllerImp>(
+      init: ChangeInitialPasswordControllerImp(),
       builder: (controller) {
         return Scaffold(
           backgroundColor: AppColor.primaryColor,
@@ -28,12 +28,13 @@ class ResetPasswordScreen extends StatelessWidget {
               child: Form(
                 key: controller.formstate,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomAppar(),
                     const SizedBox(height: 50),
 
                     Text(
-                      'reset_password_title'.tr,
+                      'Change Initial Password',
                       style: Theme.of(context).textTheme.headlineSmall!
                           .copyWith(fontWeight: FontWeight.bold, fontSize: 28),
                     ),
@@ -41,26 +42,48 @@ class ResetPasswordScreen extends StatelessWidget {
                     const SizedBox(height: 15),
 
                     Text(
-                      'reset_password_subtitle'.tr,
-                      textAlign: TextAlign.center,
+                      'Create a new secure password before continuing.',
+                      textAlign: TextAlign.start,
                       style: TextStyle(color: theme.hintColor),
                     ),
 
                     const SizedBox(height: 40),
 
-                    CustomLabel(text: 'new_password'.tr),
+                    const CustomLabel(text: 'Email'),
+                    CustomTextFiled(
+                      controller: controller.emailController,
+                      hint: 'Enter your email',
+                      icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: controller.validateEmail,
+                    ),
 
+                    const SizedBox(height: 30),
+
+                    const CustomLabel(text: 'Current Password'),
                     CustomPassTextFiled(
-                      controller: controller.passwordController,
-                      validator: (val) {
-                        return validInput(val!, 6, 100, "password");
-                      },
-                      obscureText: !controller.isPasswordVisible,
+                      controller: controller.currentPasswordController,
+                      obscureText: !controller.isCurrentPasswordVisible,
                       iconData:
-                          controller.isPasswordVisible
+                          controller.isCurrentPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                      onPressedIcon: controller.toggleVisibility,
+                      onPressedIcon: controller.toggleCurrentPasswordVisibility,
+                      validator: controller.validateCurrentPassword,
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    const CustomLabel(text: 'New Password'),
+                    CustomPassTextFiled(
+                      controller: controller.newPasswordController,
+                      obscureText: !controller.isNewPasswordVisible,
+                      iconData:
+                          controller.isNewPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                      onPressedIcon: controller.toggleNewPasswordVisibility,
+                      validator: controller.validateNewPassword,
                       onChanged: (value) {
                         controller.checkPasswordStrength(value);
                       },
@@ -68,7 +91,7 @@ class ResetPasswordScreen extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                    GetBuilder<ResetPasswordControllerImp>(
+                    GetBuilder<ChangeInitialPasswordControllerImp>(
                       id: 'strength_meter',
                       builder: (controller) {
                         return CustomStrengthMeter(
@@ -80,36 +103,34 @@ class ResetPasswordScreen extends StatelessWidget {
 
                     const SizedBox(height: 30),
 
-                    CustomLabel(text: 'confirm_password'.tr),
-
+                    const CustomLabel(text: 'Confirm New Password'),
                     CustomPassTextFiled(
-                      controller: controller.confirmController,
-                      validator: (val) {
-                        return validInput(val!, 6, 100, "password");
-                      },
-                      obscureText: !controller.isPasswordVisible,
+                      controller: controller.confirmPasswordController,
+                      obscureText: !controller.isConfirmPasswordVisible,
                       iconData:
-                          controller.isPasswordVisible
+                          controller.isConfirmPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                      onPressedIcon: controller.toggleVisibility,
+                      onPressedIcon: controller.toggleConfirmPasswordVisibility,
+                      validator: controller.validateConfirmPassword,
                     ),
 
                     const SizedBox(height: 40),
 
                     controller.statusRequest == StatusRequest.loading
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
                         : CustomAuthButton(
-                          text: 'update_password'.tr,
+                          text: 'Save Changes',
                           onPressed: () {
-                            controller.resetPassword();
+                            controller.changeInitialPassword();
                           },
                         ),
 
                     const SizedBox(height: 30),
 
                     _buildFooterNote(),
-
                     const SizedBox(height: 30),
                   ],
                 ),
@@ -123,9 +144,9 @@ class ResetPasswordScreen extends StatelessWidget {
 }
 
 Widget _buildFooterNote() {
-  return Text(
-    "password_note".tr,
+  return const Text(
+    'Your new password should be different from the current password and easy for you to remember.',
     textAlign: TextAlign.center,
-    style: const TextStyle(color: Colors.white30, fontSize: 12, height: 1.5),
+    style: TextStyle(color: Colors.white30, fontSize: 12, height: 1.5),
   );
 }

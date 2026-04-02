@@ -10,6 +10,7 @@ class CustomLabel extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8.0, left: 4),
       child: Text(
         text,
+        textAlign: TextAlign.start,
         style: TextStyle(
           color: Theme.of(context).hintColor,
           fontSize: 11,

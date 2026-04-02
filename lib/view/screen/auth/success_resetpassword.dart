@@ -1,45 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transport_project/controller/auth/successresetcontroller.dart';
+import 'package:transport_project/core/constant/AppColor.dart';
+import 'package:transport_project/view/widget/auth/custom_auth_button_widget.dart';
 
 class ResetSuccessScreen extends StatelessWidget {
-  const ResetSuccessScreen({Key? key}) : super(key: key);
+  const ResetSuccessScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return GetBuilder<ResetSuccessController>(
       init: ResetSuccessController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: const Color(0xFF0D111F),
+          backgroundColor: AppColor.primaryColor,
           body: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 2),
                 _buildSuccessIcon(),
-                const SizedBox(height: 40),
-                const Text(
-                  "Password Updated!",
-                  style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                const SizedBox(height: 55),
+                Text(
+                  "reset_success_title".tr,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
+                  ),
                 ),
                 const SizedBox(height: 15),
-                const Text(
-                  "Your password has been changed\nsuccessfully. You can now login with your\nnew credentials.",
+                Text(
+                  "reset_success_subtitle".tr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white54, fontSize: 14, height: 1.5),
+                  style: TextStyle(color: theme.hintColor),
                 ),
                 const Spacer(),
-                _buildBackToLoginButton(controller),
+                CustomAuthButton(
+                  text: 'back_to_login'.tr,
+                  onPressed: () {
+                    controller.goToLogin();
+                  },
+                ),
                 const SizedBox(height: 25),
-                const Text(
-                  "SECURE SESSION ACTIVE",
-                  style: TextStyle(color: Colors.white12, fontSize: 12, letterSpacing: 2),
+                Text(
+                  "secure_session_active".tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: theme.hintColor),
                 ),
                 const Spacer(),
-                _buildSystemStatus(),
+                _buildSystemStatus(context),
                 const SizedBox(height: 20),
               ],
             ),
@@ -49,12 +62,10 @@ class ResetSuccessScreen extends StatelessWidget {
     );
   }
 
-  // أيقونة النجاح مع تأثير الهالة (Glow)
   Widget _buildSuccessIcon() {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // الهالة الخلفية
         Container(
           width: 140,
           height: 140,
@@ -69,7 +80,6 @@ class ResetSuccessScreen extends StatelessWidget {
             ],
           ),
         ),
-        // المربع المنحني الأساسي
         Container(
           width: 100,
           height: 100,
@@ -82,7 +92,9 @@ class ResetSuccessScreen extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(colors: [Color(0xFF7B8CFF), Color(0xFFD497FF)]),
+                gradient: LinearGradient(
+                  colors: [Color(0xFF7B8CFF), Color(0xFFD497FF)],
+                ),
               ),
               child: const Icon(Icons.check, color: Colors.white, size: 30),
             ),
@@ -92,31 +104,9 @@ class ResetSuccessScreen extends StatelessWidget {
     );
   }
 
-  // الزر المتدرج العريض
-  Widget _buildBackToLoginButton(ResetSuccessController controller) {
-    return InkWell(
-      onTap: controller.goToLogin,
-      child: Container(
-        width: double.infinity,
-        height: 55,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF3F66F6), Color(0xFFD497FF)],
-          ),
-        ),
-        child: const Center(
-          child: Text(
-            "Back to Login",
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
-  }
+  Widget _buildSystemStatus(BuildContext context) {
+    final theme = Theme.of(context);
 
-  // شريط حالة النظام في الأسفل
-  Widget _buildSystemStatus() {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -127,15 +117,33 @@ class ResetSuccessScreen extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(color: Color(0xFF161B2E), shape: BoxShape.circle),
-            child: const Icon(Icons.shield_outlined, color: Colors.blueAccent, size: 18),
+            decoration: const BoxDecoration(
+              color: Color(0xFF161B2E),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.shield_outlined,
+              color: Colors.blueAccent,
+              size: 18,
+            ),
           ),
           const SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("SYSTEM STATUS", style: TextStyle(color: Colors.blueAccent, fontSize: 10, fontWeight: FontWeight.bold)),
-              Text("Encrypted connection verified.", style: TextStyle(color: Colors.white38, fontSize: 11)),
+            children: [
+              Text(
+                "system_status".tr,
+                style: const TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                "encrypted_connection_verified".tr,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: theme.hintColor),
+              ),
             ],
           ),
         ],
