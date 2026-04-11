@@ -7,6 +7,7 @@ import 'package:transport_project/view/screen/auth/loginscreen.dart';
 import 'package:transport_project/view/screen/auth/otpscreen.dart';
 import 'package:transport_project/view/screen/auth/resetpassword.dart';
 import 'package:transport_project/view/screen/auth/success_resetpassword.dart';
+import 'package:transport_project/view/screen/home/trip_creation_page.dart';
 
 List<GetPage<dynamic>>? getPages = [
   // intro.....
@@ -15,7 +16,11 @@ List<GetPage<dynamic>>? getPages = [
   GetPage(name: AppRoute.verfiyCode, page: () => VerifyOTPScreen()),
   GetPage(name: AppRoute.resetPassword, page: () => ResetPasswordScreen()),
   GetPage(name: AppRoute.successReset, page: () => ResetSuccessScreen()),
-  GetPage(name: AppRoute.changeinitailpassword, page: () => ChangeInitialPasswordScreen()),
+  GetPage(
+    name: AppRoute.changeinitailpassword,
+    page: () => ChangeInitialPasswordScreen(),
+  ),
 
   //home
+  GetPage(name: AppRoute.homepage, page: () => TripCreationPage()),
 ];

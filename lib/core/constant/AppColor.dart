@@ -6,9 +6,8 @@ class AppColor {
   static const Color secondaryColor = Color(0xFF090B19);
   static const Color primaryColor = Color(0xFF1A1F3C);
   static Color cardColor = Colors.white.withOpacity(0.05);
-  static const Color thirdColor = Color(0xFF4A7DFF);
+  static const Color thirdColor = Color.fromARGB(255, 100, 144, 255);
   static const Color fourthColor = Color(0xFFC387FF);
-
 
   // light mode
   static const Color primaryColorL = Color.fromRGBO(227, 242, 253, 1);

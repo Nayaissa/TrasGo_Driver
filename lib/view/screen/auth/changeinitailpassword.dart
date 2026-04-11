@@ -34,25 +34,27 @@ class ChangeInitialPasswordScreen extends StatelessWidget {
                     const SizedBox(height: 50),
 
                     Text(
-                      'Change Initial Password',
-                      style: Theme.of(context).textTheme.headlineSmall!
-                          .copyWith(fontWeight: FontWeight.bold, fontSize: 28),
+                      'change_initial_password_title'.tr,
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 28,
+                          ),
                     ),
 
                     const SizedBox(height: 15),
 
                     Text(
-                      'Create a new secure password before continuing.',
+                      'change_initial_password_subtitle'.tr,
                       textAlign: TextAlign.start,
                       style: TextStyle(color: theme.hintColor),
                     ),
 
                     const SizedBox(height: 40),
 
-                    const CustomLabel(text: 'Email'),
+                    CustomLabel(text: 'email_label'.tr),
                     CustomTextFiled(
                       controller: controller.emailController,
-                      hint: 'Enter your email',
+                      hint: 'enter_your_email'.tr,
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       validator: controller.validateEmail,
@@ -60,28 +62,26 @@ class ChangeInitialPasswordScreen extends StatelessWidget {
 
                     const SizedBox(height: 30),
 
-                    const CustomLabel(text: 'Current Password'),
+                    CustomLabel(text: 'current_password'.tr),
                     CustomPassTextFiled(
                       controller: controller.currentPasswordController,
                       obscureText: !controller.isCurrentPasswordVisible,
-                      iconData:
-                          controller.isCurrentPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      iconData: controller.isCurrentPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       onPressedIcon: controller.toggleCurrentPasswordVisibility,
                       validator: controller.validateCurrentPassword,
                     ),
 
                     const SizedBox(height: 30),
 
-                    const CustomLabel(text: 'New Password'),
+                    CustomLabel(text: 'new_password'.tr),
                     CustomPassTextFiled(
                       controller: controller.newPasswordController,
                       obscureText: !controller.isNewPasswordVisible,
-                      iconData:
-                          controller.isNewPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      iconData: controller.isNewPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       onPressedIcon: controller.toggleNewPasswordVisibility,
                       validator: controller.validateNewPassword,
                       onChanged: (value) {
@@ -103,14 +103,13 @@ class ChangeInitialPasswordScreen extends StatelessWidget {
 
                     const SizedBox(height: 30),
 
-                    const CustomLabel(text: 'Confirm New Password'),
+                    CustomLabel(text: 'confirm_new_password'.tr),
                     CustomPassTextFiled(
                       controller: controller.confirmPasswordController,
                       obscureText: !controller.isConfirmPasswordVisible,
-                      iconData:
-                          controller.isConfirmPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      iconData: controller.isConfirmPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       onPressedIcon: controller.toggleConfirmPasswordVisibility,
                       validator: controller.validateConfirmPassword,
                     ),
@@ -119,14 +118,14 @@ class ChangeInitialPasswordScreen extends StatelessWidget {
 
                     controller.statusRequest == StatusRequest.loading
                         ? const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        )
+                            child: CircularProgressIndicator(color: Colors.white),
+                          )
                         : CustomAuthButton(
-                          text: 'Save Changes',
-                          onPressed: () {
-                            controller.changeInitialPassword();
-                          },
-                        ),
+                            text: 'save_changes'.tr,
+                            onPressed: () {
+                              controller.changeInitialPassword();
+                            },
+                          ),
 
                     const SizedBox(height: 30),
 
@@ -144,9 +143,13 @@ class ChangeInitialPasswordScreen extends StatelessWidget {
 }
 
 Widget _buildFooterNote() {
-  return const Text(
-    'Your new password should be different from the current password and easy for you to remember.',
+  return Text(
+    'change_password_footer_note'.tr,
     textAlign: TextAlign.center,
-    style: TextStyle(color: Colors.white30, fontSize: 12, height: 1.5),
+    style: const TextStyle(
+      color: Colors.white30,
+      fontSize: 12,
+      height: 1.5,
+    ),
   );
 }

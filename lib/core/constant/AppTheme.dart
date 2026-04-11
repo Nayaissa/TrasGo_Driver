@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
 
 ThemeData themeEnglish = ThemeData(
-  fontFamily: 'PoetsenOne',
+  fontFamily: 'Sekuya',
   textTheme: const TextTheme(
     // displayLarge: TextStyle(
     //   fontSize: 25,
@@ -36,7 +36,7 @@ ThemeData themeEnglish = ThemeData(
 
 
 ThemeData themeArabic = ThemeData(
-  fontFamily: 'PoetsenOne',
+  fontFamily: 'Sekuya',
   textTheme: const TextTheme(
     displayLarge: TextStyle(
       fontSize: 25,

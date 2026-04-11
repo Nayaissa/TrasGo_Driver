@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:transport_project/core/services/service.dart';
@@ -10,15 +9,15 @@ class DioHelper {
 
   /// Initialize Dio with base settings
   static void init() {
-  dioClient = dio.Dio(
-    dio.BaseOptions(
-      baseUrl: 'http://10.0.2.2:8000/api/',
-      connectTimeout: Duration(seconds: 50),
-      validateStatus: (status) => true,
-      receiveDataWhenStatusError: false,
-    ),
-  );
-}
+    dioClient = dio.Dio(
+      dio.BaseOptions(
+        baseUrl: 'http://192.168.1.104:8000/api/',
+        connectTimeout: Duration(seconds: 50),
+        validateStatus: (status) => true,
+        receiveDataWhenStatusError: false,
+      ),
+    );
+  }
 
   /// Basic GET request without token
   static Future<dio.Response?> getData({
@@ -58,8 +57,6 @@ class DioHelper {
     }
   }
 
-  
-
   /// POST request without token
   Future<dio.Response?> postData({
     required String url,
@@ -67,9 +64,7 @@ class DioHelper {
     Map<String, dynamic>? query,
   }) async {
     try {
-      dioClient!.options.headers = {
-        'Accept': 'application/json',
-      };
+      dioClient!.options.headers = {'Accept': 'application/json'};
       return await dioClient?.post(url, queryParameters: query, data: data);
     } catch (e) {
       print('Error posting data: $e');

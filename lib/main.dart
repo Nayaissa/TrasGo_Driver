@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transport_project/bindings/initalbindings.dart';
@@ -23,26 +22,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-      LocalController controller = Get.put(LocalController());
+    LocalController controller = Get.put(LocalController());
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       locale: controller.language,
-      translations: MyTranslation(), 
-      fallbackLocale: Locale('ar'),   
-    theme: ThemeData.light().copyWith(
-    primaryColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: Colors.grey[100], // لون الحاوية في المود الفاتح
-    hintColor: Colors.black54,
-  ),
-  darkTheme: ThemeData.dark().copyWith(
-    primaryColor: Colors.blueAccent,
-    scaffoldBackgroundColor: const Color(0xFF090B19),
-    cardColor: Colors.white.withOpacity(0.05), // لون الحاوية في المود المظلم
-    hintColor: Colors.white54,
-  ),
-  themeMode: ThemeMode.dark,
+      translations: MyTranslation(),
+      fallbackLocale: Locale('ar'),
+      theme: ThemeData.light().copyWith(
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        cardColor: Colors.grey[100],
+        hintColor: Colors.black54,
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        primaryColor: Colors.blueAccent,
+        scaffoldBackgroundColor: const Color(0xFF090B19),
+        cardColor: Colors.white.withOpacity(0.05),
+        hintColor: Colors.white54,
+      ),
+      themeMode: ThemeMode.dark,
       initialBinding: InitialBinding(),
       initialRoute: '/',
       getPages: getPages,
