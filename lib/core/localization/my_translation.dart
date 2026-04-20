@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+﻿import 'package:get/get.dart';
 
 class MyTranslation extends Translations {
   @override
@@ -13,7 +13,8 @@ class MyTranslation extends Translations {
           'forgot_password_question': 'Forgot Password?',
           'login_button': 'Login',
           'become_driver': 'Become a TransGo Driver',
-          'login_footer': '© 2026 TransGo Logistics. Premium Drive Experience.',
+          'login_footer':
+              '© 2026 TransGo Logistics. Premium Drive Experience.',
           'forgot_password_title': 'Forgot Password',
           'forgot_password_subtitle':
               'Enter your phone number and we\'ll send\nyou a verification code.',
@@ -80,20 +81,62 @@ class MyTranslation extends Translations {
           'add_stop': 'Add Stop',
           'clear_stops': 'Clear Stops',
           'reset_points': 'Reset Points',
+          'route_planner_title': 'Plan the route',
+          'route_planner_subtitle':
+              'Choose the start, destination, and optional stops directly from the map.',
+          'trip_details_title': 'Trip details',
+          'trip_details_subtitle':
+              'The selected route stays on the map while you finish the trip setup.',
+          'route_intro_title': 'Build a clean trip path',
+          'route_intro_subtitle':
+              'Tap the map after choosing the point type. Stops are optional and can be added in order.',
+          'choose_point_type': 'Choose point type',
+          'choose_point_type_subtitle':
+              'Switch between pickup, destination, and stops before tapping the map.',
+          'pickup_point_label': 'Pickup point',
+          'destination_point_label': 'Destination point',
+          'pickup_empty': 'Pickup point has not been selected yet',
+          'destination_empty':
+              'Destination point has not been selected yet',
+          'point_not_selected': 'Point not selected',
+          'stops_count': 'Stops:',
+          'stop_label': 'Stop',
+          'route_summary': 'Route summary',
+          'route_summary_empty':
+              'Select pickup and destination to preview distance and time.',
+          'map_pick_points_hint':
+              'Select the pickup and destination from the map to continue.',
+          'continue_to_trip_details': 'Continue to trip details',
+          'selected_route_title': 'Selected route',
+          'create_trip_now': 'Create trip',
+          'trip_points_required':
+              'Please choose both pickup and destination before continuing.',
+          'miles_label': 'miles',
+          'mins_label': 'mins',
           'time': 'TIME',
           'select_departure_date': 'SELECT DEPARTURE DATE',
           'driver_notes_optional': 'DRIVER NOTES (OPTIONAL)',
-          'notes_hint': 'e.g. Clean car, pet friendly, no smoking...',
+          'notes_hint':
+              'e.g. Clean car, pet friendly, no smoking...',
           'pricing_setup': 'PRICING SETUP',
           'suggested_price': 'Suggested',
           'seat_price': 'Seat price',
-          'private_trip_price_optional': 'Private trip price (optional)',
+          'private_trip_price_optional':
+              'Private trip price (optional)',
           'price_range_note': 'Price must be 50–100% of suggested',
           'available_seats': 'AVAILABLE SEATS',
           'home': 'HOME',
           'trips': 'TRIPS',
           'profile': 'PROFILE',
           'earnings': 'EARNINGS',
+
+          // Trip Type
+          'trip_type': 'TRIP TYPE',
+          'private_trip': 'Private',
+          'private_trip_desc': 'Book the entire vehicle for the trip',
+          'shared_trip': 'Shared',
+          'shared_trip_desc':
+              'Optimized for individual seat bookings',
 
           // Months
           'jan': 'Jan',
@@ -119,7 +162,8 @@ class MyTranslation extends Translations {
           'forgot_password_question': 'هل نسيت كلمة المرور؟',
           'login_button': 'تسجيل الدخول',
           'become_driver': 'كن سائقًا في TransGo',
-          'login_footer': '© 2026 ترانس جو للخدمات اللوجستية. تجربة قيادة مميزة.',
+          'login_footer':
+              '© 2026 ترانس جو للخدمات اللوجستية. تجربة قيادة مميزة.',
           'forgot_password_title': 'نسيت كلمة المرور',
           'forgot_password_subtitle':
               'أدخل رقم هاتفك وسنرسل لك\nرمز التحقق.',
@@ -134,7 +178,8 @@ class MyTranslation extends Translations {
           'resend_code': 'إعادة إرسال الرمز ↻',
           'verify_continue': 'تحقق ومتابعة',
           'reset_password_title': 'إعادة تعيين كلمة المرور',
-          'reset_password_subtitle': 'أنشئ كلمة مرور قوية جديدة لحسابك.',
+          'reset_password_subtitle':
+              'أنشئ كلمة مرور قوية جديدة لحسابك.',
           'new_password': 'كلمة المرور الجديدة',
           'confirm_password': 'تأكيد كلمة المرور',
           'update_password': 'تحديث كلمة المرور',
@@ -147,7 +192,8 @@ class MyTranslation extends Translations {
           'back_to_login': 'العودة إلى تسجيل الدخول',
           'secure_session_active': 'الجلسة الآمنة نشطة',
           'system_status': 'حالة النظام',
-          'encrypted_connection_verified': 'تم التحقق من الاتصال المشفر.',
+          'encrypted_connection_verified':
+              'تم التحقق من الاتصال المشفر.',
           'first_time_login_change_password':
               'أول تسجيل دخول؟ غيّر كلمة المرور',
           'warning_title': 'تنبيه',
@@ -168,8 +214,10 @@ class MyTranslation extends Translations {
           'enter_complete_otp': 'أدخل رمز التحقق كاملًا',
           'verified_message': 'تم التحقق بنجاح',
           'invalid_otp': 'رمز التحقق غير صحيح',
-          'failed_to_reset_password': 'فشل في إعادة تعيين كلمة المرور',
-          'change_initial_password_title': 'تغيير كلمة المرور الأولية',
+          'failed_to_reset_password':
+              'فشل في إعادة تعيين كلمة المرور',
+          'change_initial_password_title':
+              'تغيير كلمة المرور الأولية',
           'change_initial_password_subtitle':
               'أنشئ كلمة مرور جديدة وآمنة قبل المتابعة.',
           'enter_your_email': 'أدخل بريدك الإلكتروني',
@@ -185,6 +233,37 @@ class MyTranslation extends Translations {
           'add_stop': 'إضافة محطة',
           'clear_stops': 'حذف المحطات',
           'reset_points': 'إعادة تعيين النقاط',
+          'route_planner_title': 'تخطيط المسار',
+          'route_planner_subtitle':
+              'اختر نقطة البداية والنهاية ونقاط التوقف الاختيارية مباشرة من الخريطة.',
+          'trip_details_title': 'تفاصيل الرحلة',
+          'trip_details_subtitle':
+              'يبقى المسار المختار ظاهرًا على الخريطة أثناء إكمال بيانات الرحلة.',
+          'route_intro_title': 'ابدأ برسم مسار الرحلة',
+          'route_intro_subtitle':
+              'اختر نوع النقطة أولًا ثم اضغط على الخريطة. نقاط التوقف اختيارية ويمكن إضافتها بالترتيب.',
+          'choose_point_type': 'اختر نوع النقطة',
+          'choose_point_type_subtitle':
+              'بدّل بين الانطلاق والوجهة ونقاط التوقف قبل الضغط على الخريطة.',
+          'pickup_point_label': 'نقطة الانطلاق',
+          'destination_point_label': 'نقطة الوصول',
+          'pickup_empty': 'لم يتم اختيار نقطة الانطلاق بعد',
+          'destination_empty': 'لم يتم اختيار نقطة الوصول بعد',
+          'point_not_selected': 'لم يتم اختيار النقطة',
+          'stops_count': 'نقاط التوقف:',
+          'stop_label': 'توقف',
+          'route_summary': 'ملخص المسار',
+          'route_summary_empty':
+              'اختر نقطة الانطلاق والوجهة ليظهر لك طول المسار والوقت المتوقع.',
+          'map_pick_points_hint':
+              'حدّد نقطة الانطلاق والوجهة من الخريطة للمتابعة.',
+          'continue_to_trip_details': 'متابعة إلى تفاصيل الرحلة',
+          'selected_route_title': 'المسار المختار',
+          'create_trip_now': 'إنشاء الرحلة',
+          'trip_points_required':
+              'يرجى اختيار نقطة الانطلاق والوجهة قبل المتابعة.',
+          'miles_label': 'ميل',
+          'mins_label': 'دقيقة',
           'time': 'الوقت',
           'select_departure_date': 'اختر تاريخ الانطلاق',
           'driver_notes_optional': 'ملاحظات السائق (اختياري)',
@@ -193,7 +272,8 @@ class MyTranslation extends Translations {
           'pricing_setup': 'إعداد التسعير',
           'suggested_price': 'السعر المقترح',
           'seat_price': 'سعر المقعد',
-          'private_trip_price_optional': 'سعر الرحلة الخاصة (اختياري)',
+          'private_trip_price_optional':
+              'سعر الرحلة الخاصة (اختياري)',
           'price_range_note':
               'يجب أن يكون السعر بين 50% و100% من السعر المقترح',
           'available_seats': 'المقاعد المتاحة',
@@ -201,6 +281,13 @@ class MyTranslation extends Translations {
           'trips': 'الرحلات',
           'profile': 'الملف الشخصي',
           'earnings': 'الأرباح',
+
+          // Trip Type
+          'trip_type': 'نوع الرحلة',
+          'private_trip': 'خاصة',
+          'private_trip_desc': 'احجز المركبة بالكامل لهذه الرحلة',
+          'shared_trip': 'مشتركة',
+          'shared_trip_desc': 'مناسبة لحجز المقاعد بشكل فردي',
 
           // Months
           'jan': 'ينا',

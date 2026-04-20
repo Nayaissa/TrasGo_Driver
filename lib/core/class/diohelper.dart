@@ -11,7 +11,7 @@ class DioHelper {
   static void init() {
     dioClient = dio.Dio(
       dio.BaseOptions(
-        baseUrl: 'http://192.168.1.104:8000/api/',
+        baseUrl: 'http://10.0.2.2:8000/api/',
         connectTimeout: Duration(seconds: 50),
         validateStatus: (status) => true,
         receiveDataWhenStatusError: false,
@@ -83,7 +83,7 @@ class DioHelper {
 
       dioClient!.options.headers = {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer 2|e5YjLIwJNb1gKhS8vPTIdDVauC8uueiVKb3Ud1g656a1e7cc',
       };
 
       return await dioClient?.post(url, queryParameters: query, data: data);

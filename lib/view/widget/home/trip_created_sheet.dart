@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:transport_project/data/model/trip_draft.dart';
+import 'package:transport_project/view/widget/auth/custom_auth_button_widget.dart';
 
 class TripCreatedSheet extends StatelessWidget {
   const TripCreatedSheet({super.key, required this.draft});
@@ -53,16 +54,11 @@ class TripCreatedSheet extends StatelessWidget {
           const SizedBox(height: 18),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Get.back(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7C90FF),
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-              ),
-              child: const Text('إغلاق'),
+            child: CustomAuthButton(
+              text: 'اغلاق',
+              onPressed: () {
+                Get.back();
+              },
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transport_project/view/widget/home/section_title.dart';
 
 class TimeCard extends StatelessWidget {
   const TimeCard({
@@ -17,15 +18,16 @@ class TimeCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1,
-          ),
-        ),
+        SectionTitle(title),
+        // Text(
+        //   title,
+        //   style: const TextStyle(
+        //     color: Colors.white70,
+        //     fontSize: 11,
+        //     fontWeight: FontWeight.w700,
+        //     letterSpacing: 1,
+        //   ),
+        // ),
         const SizedBox(height: 10),
         InkWell(
           onTap: onTap,

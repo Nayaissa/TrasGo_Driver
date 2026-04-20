@@ -4,6 +4,7 @@ import 'package:transport_project/bindings/initalbindings.dart';
 import 'package:transport_project/core/class/diohelper.dart';
 import 'package:transport_project/core/localization/local_controller.dart';
 import 'package:transport_project/core/localization/my_translation.dart';
+import 'package:transport_project/core/constant/routes.dart';
 import 'package:transport_project/core/services/service.dart';
 import 'package:transport_project/routes.dart';
 
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
       locale: controller.language,
       translations: MyTranslation(),
       fallbackLocale: Locale('ar'),
+      
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.white,

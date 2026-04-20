@@ -10,6 +10,7 @@ class AppRoute {
     static const String changeinitailpassword = '/changeinitailpassword';
 
   //home
+  static const String splash = '/splash';
   static const String homepage = '/homepage';
   //services
   static const String servicespage = '/servicespage';

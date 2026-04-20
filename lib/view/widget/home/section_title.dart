@@ -10,8 +10,8 @@ class SectionTitle extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        color: Colors.white70,
-        fontSize: 11,
+        color: Colors.white,
+        fontSize: 18,
         fontWeight: FontWeight.w800,
         letterSpacing: 1.1,
       ),

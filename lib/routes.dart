@@ -7,11 +7,13 @@ import 'package:transport_project/view/screen/auth/loginscreen.dart';
 import 'package:transport_project/view/screen/auth/otpscreen.dart';
 import 'package:transport_project/view/screen/auth/resetpassword.dart';
 import 'package:transport_project/view/screen/auth/success_resetpassword.dart';
-import 'package:transport_project/view/screen/home/trip_creation_page.dart';
+import 'package:transport_project/view/screen/home/home.dart';
+import 'package:transport_project/view/screen/splash/splash_screen.dart';
 
 List<GetPage<dynamic>>? getPages = [
   // intro.....
-  GetPage(name: '/', page: () => LoginScreen(), middlewares: [MyMiddleWare()]),
+  GetPage(name: '/', page: () =>  SplashScreen()),
+  GetPage(name: AppRoute.login, page: () => LoginScreen(), middlewares: [MyMiddleWare()]),
   GetPage(name: AppRoute.forgetPassword, page: () => ForgotPasswordScreen()),
   GetPage(name: AppRoute.verfiyCode, page: () => VerifyOTPScreen()),
   GetPage(name: AppRoute.resetPassword, page: () => ResetPasswordScreen()),
@@ -22,5 +24,5 @@ List<GetPage<dynamic>>? getPages = [
   ),
 
   //home
-  GetPage(name: AppRoute.homepage, page: () => TripCreationPage()),
+  GetPage(name: AppRoute.homepage, page: () => HomeScreen()),
 ];
