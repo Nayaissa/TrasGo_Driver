@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:transport_project/controller/home/tripcontroller.dart';
+import 'package:transport_project/controller/home/trip_create_controller.dart';
 import 'package:transport_project/view/widget/home/section_title.dart';
 
 class DateSection extends StatelessWidget {

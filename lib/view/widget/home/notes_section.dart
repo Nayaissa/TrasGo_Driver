@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:transport_project/controller/home/tripcontroller.dart';
+import 'package:transport_project/controller/home/trip_create_controller.dart';
+import 'package:transport_project/core/constant/AppColor.dart';
 import 'section_title.dart';
 
 class NotesSection extends StatelessWidget {
@@ -17,7 +18,7 @@ class NotesSection extends StatelessWidget {
         const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF121E3C),
+      color: AppColor.fifthColor,
             borderRadius: BorderRadius.circular(20),
           ),
           child: TextField(

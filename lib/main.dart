@@ -1,15 +1,28 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:transport_project/bindings/initalbindings.dart';
 import 'package:transport_project/core/class/diohelper.dart';
 import 'package:transport_project/core/localization/local_controller.dart';
 import 'package:transport_project/core/localization/my_translation.dart';
-import 'package:transport_project/core/constant/routes.dart';
 import 'package:transport_project/core/services/service.dart';
+import 'package:transport_project/firebase_options.dart';
 import 'package:transport_project/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+    await initializeDateFormatting(); 
+await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+ await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  DioHelper.init();
   await initalSevices();
 
   DioHelper.init();

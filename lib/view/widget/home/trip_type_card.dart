@@ -27,7 +27,7 @@ class TripTypeCard extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
         constraints: const BoxConstraints(minHeight: 152),
         decoration: BoxDecoration(
-          color: const Color(0xFF182447),
+          color: AppColor.fifthColor,
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color: selected ? AppColor.thirdColor : AppColor.grey,

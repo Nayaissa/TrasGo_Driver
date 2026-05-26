@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:transport_project/controller/home/tripcontroller.dart';
+import 'package:transport_project/controller/home/trip_create_controller.dart';
 
 class CreateTripButton extends StatelessWidget {
   const CreateTripButton({super.key, required this.controller});

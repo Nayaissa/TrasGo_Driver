@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:transport_project/controller/home/tripcontroller.dart';
+import 'package:transport_project/controller/home/trip_create_controller.dart';
 import 'package:transport_project/view/widget/home/section_title.dart';
 import 'package:transport_project/view/widget/home/trip_type_card.dart';
 

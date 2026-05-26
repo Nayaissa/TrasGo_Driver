@@ -40,6 +40,8 @@ dependencies:
   google_maps_flutter: ^2.14.0
   intl: ^0.20.2
   geolocator: ^14.0.2
+  firebase_messaging: ^16.2.0
+  firebase_core: ^4.7.0
 
 dev_dependencies:
   flutter_test:
@@ -79,9 +81,16 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Sekuya
+    - family: Poppins
       fonts:
-        - asset: assets/fonts/Sekuya-Regular.ttf
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400
+
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

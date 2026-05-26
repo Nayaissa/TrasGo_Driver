@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transport_project/core/constant/AppColor.dart';
 import 'package:transport_project/view/widget/home/section_title.dart';
 
 class TimeCard extends StatelessWidget {
@@ -36,7 +37,7 @@ class TimeCard extends StatelessWidget {
             height: 58,
             padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
-              color: const Color(0xFF121E3C),
+      color: AppColor.fifthColor,
               borderRadius: BorderRadius.circular(18),
             ),
             child: Row(

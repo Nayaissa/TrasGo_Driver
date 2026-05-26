@@ -11,7 +11,7 @@ class DioHelper {
   static void init() {
     dioClient = dio.Dio(
       dio.BaseOptions(
-        baseUrl: 'http://10.0.2.2:8000/api/',
+        baseUrl: 'http://192.168.131.74:8000/api/',
         connectTimeout: Duration(seconds: 50),
         validateStatus: (status) => true,
         receiveDataWhenStatusError: false,
@@ -46,7 +46,8 @@ class DioHelper {
 
       dioClient!.options.headers = {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
+        'Authorization':
+            'Bearer 26|rYcQEMIrCJSJ5JnZkcOxtFGV906hPdSzoIupG5qubc5a4ff9',
       };
 
       return await dioClient?.get(url, queryParameters: query);
@@ -73,6 +74,7 @@ class DioHelper {
   }
 
   /// POST request with token from shared preferences
+  /// 
   static Future<dio.Response?> postsData({
     required String url,
     required Map<String, dynamic> data,
@@ -83,10 +85,33 @@ class DioHelper {
 
       dioClient!.options.headers = {
         'Accept': 'application/json',
-        'Authorization': 'Bearer 2|e5YjLIwJNb1gKhS8vPTIdDVauC8uueiVKb3Ud1g656a1e7cc',
+        'Authorization':
+            'Bearer 26|rYcQEMIrCJSJ5JnZkcOxtFGV906hPdSzoIupG5qubc5a4ff9',
       };
 
       return await dioClient?.post(url, queryParameters: query, data: data);
+    } catch (e) {
+      print('Error posting data: $e');
+      return null;
+    }
+  }
+
+  /// POST request with token from shared preferences
+  static Future<dio.Response?> patchData({
+    required String url,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? query,
+  }) async {
+    try {
+      String? token = myServices.sharedPreferences.getString('token') ?? '';
+
+      dioClient!.options.headers = {
+        'Accept': 'application/json',
+        'Authorization':
+            'Bearer 21|RRkD1DZd6x85pfjERLoJdipjC3dJI6lxa80O97pz34781742',
+      };
+
+      return await dioClient?.patch(url, queryParameters: query, data: data);
     } catch (e) {
       print('Error posting data: $e');
       return null;

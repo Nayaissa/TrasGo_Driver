@@ -5,6 +5,7 @@ class AppColor {
   static const Color grey = Color.fromRGBO(123, 116, 116, 0.725);
   static const Color secondaryColor = Color(0xFF090B19);
   static const Color primaryColor = Color(0xFF1A1F3C);
+    static const Color fifthColor =  Color(0xFF182447);
   static Color cardColor = Colors.white.withOpacity(0.05);
   static const Color thirdColor = Color.fromARGB(255, 100, 144, 255);
   static const Color fourthColor = Color(0xFFC387FF);

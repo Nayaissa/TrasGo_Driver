@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:transport_project/controller/home/tripcontroller.dart';
+import 'package:transport_project/controller/home/trip_create_controller.dart';
+import 'package:transport_project/core/constant/AppColor.dart';
 
 class TopMapCard extends StatelessWidget {
   const TopMapCard({
@@ -167,7 +168,7 @@ class _OverlayCircleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xCC0E1D3E),
+      color: AppColor.fifthColor,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,

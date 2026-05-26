@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transport_project/controller/home/home_screen_controller.dart';
+import 'package:transport_project/core/constant/AppColor.dart';
 import 'package:transport_project/view/widget/home/bottom_nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,7 +16,8 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           extendBody: true,
           resizeToAvoidBottomInset: false,
-          backgroundColor: const Color(0xFF081225),
+          backgroundColor: AppColor.primaryColor,
+          //  const Color(0xFF081225)
           body: SafeArea(
             child: Stack(
               children: [

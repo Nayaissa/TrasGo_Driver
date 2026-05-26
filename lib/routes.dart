@@ -9,6 +9,9 @@ import 'package:transport_project/view/screen/auth/resetpassword.dart';
 import 'package:transport_project/view/screen/auth/success_resetpassword.dart';
 import 'package:transport_project/view/screen/home/home.dart';
 import 'package:transport_project/view/screen/splash/splash_screen.dart';
+import 'package:transport_project/view/screen/trips/bookings_details_view.dart';
+import 'package:transport_project/view/screen/trips/bookings_view_screen.dart';
+import 'package:transport_project/view/screen/trips/trip_detalis.dart';
 
 List<GetPage<dynamic>>? getPages = [
   // intro.....
@@ -25,4 +28,9 @@ List<GetPage<dynamic>>? getPages = [
 
   //home
   GetPage(name: AppRoute.homepage, page: () => HomeScreen()),
+  GetPage(name: AppRoute.detailsTrip, page: ()=>DetailsTrip()),
+  GetPage(name: AppRoute.bookingsTrip, page: ()=>BookingRequestsPage()),
+  GetPage(name: AppRoute.bookingsdetails, page: ()=>RideDetailsScreen()),
+
+
 ];

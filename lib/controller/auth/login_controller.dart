@@ -39,63 +39,59 @@ class LoginControllerImp extends LoginController {
       update();
 
       DioHelper.postsData(
-        url: 'v1/driver/login',
-        data: {
-          'email': email.text,
-          'password': password.text,
-        },
-      ).then((value) {
-        print(value!.data);
+            url: 'v1/driver/login',
+            data: {'email': email.text, 'password': password.text},
+          )
+          .then((value) {
+            print(value!.data);
 
-        if (value.statusCode == 200) {
-          loginModel = LoginModel.fromJson(value.data);
+            if (value.statusCode == 200) {
+              loginModel = LoginModel.fromJson(value.data);
 
-          myServices.sharedPreferences.setString(
-            'userid',
-            loginModel!.data!.user!.userId.toString(),
-          );
-          myServices.sharedPreferences.setString(
-            'username',
-            loginModel!.data!.user!.fullName!,
-          );
-          myServices.sharedPreferences.setString(
-            'token',
-            loginModel!.data!.token ?? '',
-          );
-          myServices.sharedPreferences.setString('step', '2');
+              myServices.sharedPreferences.setString(
+                'userid',
+                loginModel!.data!.user!.userId.toString(),
+              );
+              myServices.sharedPreferences.setString(
+                'username',
+                loginModel!.data!.user!.fullName!,
+              );
+              myServices.sharedPreferences.setString(
+                'token',
+                loginModel!.data!.token ?? '',
+              );
+              myServices.sharedPreferences.setString('step', '2');
 
-          statusRequest = StatusRequest.success;
+              statusRequest = StatusRequest.success;
 
-          Get.snackbar(
-            'success_title'.tr,
-            loginModel!.message ?? 'login_success'.tr,
-          );
+              Get.snackbar(
+                'success_title'.tr,
+                loginModel!.message ?? 'login_success'.tr,
+              );
 
-          // Get.offNamed(AppRoute.homepage);
+              Get.offNamed(AppRoute.homepage);
 
-          update();
-        } else {
-          loginModel = LoginModel.fromJson(value.data);
-          statusRequest = StatusRequest.failure;
+              update();
+            } else {
+              loginModel = LoginModel.fromJson(value.data);
+              statusRequest = StatusRequest.failure;
 
-          Get.snackbar(
-            'warning_title'.tr,
-            loginModel!.message ?? 'login_failed'.tr,
-          );
+              Get.snackbar(
+                'warning_title'.tr,
+                loginModel!.message ?? 'login_failed'.tr,
+              );
 
-          update();
-        }
-      }).catchError((error) {
-        print(error.toString());
-        statusRequest = StatusRequest.serverfailure;
+              update();
+            }
+          })
+          .catchError((error) {
+            print(error.toString());
+            statusRequest = StatusRequest.serverfailure;
 
-        Get.snackbar(
-          'error_title'.tr,
-          'server_error'.tr,
-        );
+            Get.snackbar('error_title'.tr, 'server_error'.tr);
 
-        update();
-      });
+            update();
+          });
 
       update();
     }

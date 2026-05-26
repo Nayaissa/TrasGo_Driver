@@ -86,18 +86,19 @@ class TripController extends GetxController {
   void _seedValidTime() {
     final now = DateTime.now();
     final roundedMinute = ((now.minute ~/ 5) + 1) * 5;
+
     final adjusted = DateTime(
       now.year,
       now.month,
       now.day,
-      now.hour,
+      roundedMinute >= 60 ? now.hour + 1 : now.hour,
       roundedMinute >= 60 ? 0 : roundedMinute,
     );
 
     selectedDate = DateTime(adjusted.year, adjusted.month, adjusted.day);
     selectedTime = TimeOfDay(
-      hour: roundedMinute >= 60 ? (now.hour + 1) % 24 : now.hour,
-      minute: roundedMinute >= 60 ? 0 : roundedMinute,
+      hour: adjusted.hour,
+      minute: adjusted.minute,
     );
   }
 
@@ -116,11 +117,8 @@ class TripController extends GetxController {
       if (!serviceEnabled) {
         isGettingCurrentLocation = false;
         update(['map']);
-        Get.snackbar(
-          'تنبيه',
-          'يرجى تشغيل خدمة الموقع GPS',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        Get.snackbar('تنبيه', 'يرجى تشغيل خدمة الموقع GPS',
+            snackPosition: SnackPosition.BOTTOM);
         return;
       }
 
@@ -133,11 +131,8 @@ class TripController extends GetxController {
       if (permission == LocationPermission.denied) {
         isGettingCurrentLocation = false;
         update(['map']);
-        Get.snackbar(
-          'تنبيه',
-          'تم رفض صلاحية الوصول إلى الموقع',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        Get.snackbar('تنبيه', 'تم رفض صلاحية الوصول إلى الموقع',
+            snackPosition: SnackPosition.BOTTOM);
         return;
       }
 
@@ -171,11 +166,8 @@ class TripController extends GetxController {
         ),
       );
     } catch (e) {
-      Get.snackbar(
-        'خطأ',
-        'تعذر جلب الموقع الحالي',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('خطأ', 'تعذر جلب الموقع الحالي',
+          snackPosition: SnackPosition.BOTTOM);
     } finally {
       isGettingCurrentLocation = false;
       update(['map']);
@@ -238,9 +230,40 @@ class TripController extends GetxController {
 
   String _twoDigits(int n) => n.toString().padLeft(2, '0');
 
+  DateTime get departureDateTime => DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
+
   String formatDepartureTime(DateTime dateTime) {
+    final local = dateTime.toLocal();
+    final offset = local.timeZoneOffset;
+
+    final sign = offset.isNegative ? '-' : '+';
+    final hours = offset.inHours.abs().toString().padLeft(2, '0');
+    final minutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+
+    return '${local.year}-${_twoDigits(local.month)}-${_twoDigits(local.day)}T'
+        '${_twoDigits(local.hour)}:${_twoDigits(local.minute)}:${_twoDigits(local.second)}'
+        '$sign$hours:$minutes';
+  }
+
+  DateTime parseServerTimeToLocal(String value) {
+    return DateTime.parse(value).toLocal();
+  }
+
+  String formatServerTime(String value) {
+    final dateTime = parseServerTimeToLocal(value);
+    return '${_twoDigits(dateTime.hour)}:${_twoDigits(dateTime.minute)}';
+  }
+
+  String formatServerDateTime(String value) {
+    final dateTime = parseServerTimeToLocal(value);
     return '${dateTime.year}-${_twoDigits(dateTime.month)}-${_twoDigits(dateTime.day)} '
-        '${_twoDigits(dateTime.hour)}:${_twoDigits(dateTime.minute)}:${_twoDigits(dateTime.second)}';
+        '${_twoDigits(dateTime.hour)}:${_twoDigits(dateTime.minute)}';
   }
 
   List<Map<String, dynamic>> buildPreviewPointsPayload() {
@@ -280,7 +303,7 @@ class TripController extends GetxController {
     final sharedPrice = double.tryParse(priceController.text.trim());
     final privatePrice = double.tryParse(privatePriceController.text.trim());
 
-    return {
+    final body = {
       "departure_time": formatDepartureTime(departureDateTime),
       "total_seats": availableSeats,
       "allow_shared": allowShared,
@@ -290,6 +313,10 @@ class TripController extends GetxController {
       "notes": notesController.text.trim(),
       "points": buildPreviewPointsPayload(),
     };
+
+    print("CREATE TRIP BODY => $body");
+
+    return body;
   }
 
   List<LatLng> decodePolyline(String encoded) {
@@ -440,9 +467,7 @@ class TripController extends GetxController {
           markerId: const MarkerId('pickup'),
           position: pickup!,
           infoWindow: const InfoWindow(title: 'نقطة البداية'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueGreen,
-          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         ),
       );
     }
@@ -453,9 +478,7 @@ class TripController extends GetxController {
           markerId: const MarkerId('destination'),
           position: destination!,
           infoWindow: const InfoWindow(title: 'نقطة النهاية'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueRed,
-          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         ),
       );
     }
@@ -466,9 +489,7 @@ class TripController extends GetxController {
           markerId: MarkerId('stop_$i'),
           position: stops[i],
           infoWindow: InfoWindow(title: 'نقطة توقف ${i + 1}'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueOrange,
-          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
         ),
       );
     }
@@ -513,26 +534,17 @@ class TripController extends GetxController {
     final double dLat = _degToRad(end.latitude - start.latitude);
     final double dLng = _degToRad(end.longitude - start.longitude);
 
-    final double a =
-        math.sin(dLat / 2) * math.sin(dLat / 2) +
-            math.cos(_degToRad(start.latitude)) *
-                math.cos(_degToRad(end.latitude)) *
-                math.sin(dLng / 2) *
-                math.sin(dLng / 2);
+    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degToRad(start.latitude)) *
+            math.cos(_degToRad(end.latitude)) *
+            math.sin(dLng / 2) *
+            math.sin(dLng / 2);
 
     final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
   }
 
   double _degToRad(double deg) => deg * math.pi / 180.0;
-
-  DateTime get departureDateTime => DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-        selectedTime.hour,
-        selectedTime.minute,
-      );
 
   TripAvailability get availability {
     if (allowShared && allowPrivate) return TripAvailability.both;
@@ -553,17 +565,6 @@ class TripController extends GetxController {
           : selectedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 60)),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF8B5CF6),
-              surface: Color(0xFF0F172A),
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
 
     if (picked != null) {
@@ -576,18 +577,6 @@ class TripController extends GetxController {
     final picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            timePickerTheme: const TimePickerThemeData(
-              backgroundColor: Color(0xFF0F172A),
-              hourMinuteTextColor: Colors.white,
-              dialHandColor: Color(0xFF8B5CF6),
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
 
     if (picked != null) {
@@ -611,22 +600,14 @@ class TripController extends GetxController {
   }
 
   void toggleShared() {
-    if (!allowShared && !allowPrivate) {
-      allowShared = true;
-    } else {
-      allowShared = !allowShared;
-      if (!allowShared && !allowPrivate) allowPrivate = true;
-    }
+    allowShared = !allowShared;
+    if (!allowShared && !allowPrivate) allowPrivate = true;
     update(['trip_type', 'pricing_section']);
   }
 
   void togglePrivate() {
-    if (!allowPrivate && !allowShared) {
-      allowPrivate = true;
-    } else {
-      allowPrivate = !allowPrivate;
-      if (!allowPrivate && !allowShared) allowShared = true;
-    }
+    allowPrivate = !allowPrivate;
+    if (!allowPrivate && !allowShared) allowShared = true;
     update(['trip_type', 'pricing_section']);
   }
 
@@ -653,14 +634,17 @@ class TripController extends GetxController {
     backendRoutePoints.clear();
     polylines.clear();
     markers.clear();
+
     routeDistanceMiles = 0.0;
     routeDurationMinutes = 0;
     suggestedPrice = 45.0;
+
     systemCalculatedPrice = 0.0;
     sharedMinPrice = 0.0;
     sharedMaxPrice = 0.0;
     privateMinPrice = 0.0;
     privateMaxPrice = 0.0;
+
     startGovernorateName = null;
     endGovernorateName = null;
     selectionMode = 'pickup';
@@ -668,12 +652,19 @@ class TripController extends GetxController {
     currentStep = 0;
     previewStatusRequest = null;
     storeTripStatusRequest = null;
+
     priceController.text = '20.00';
     privatePriceController.clear();
     notesController.clear();
 
-    update(['map', 'trip_points', 'pricing_section', 'trip_step', 'create_trip_button']);
-    update(['trip_flow']);
+    update([
+      'map',
+      'trip_points',
+      'pricing_section',
+      'trip_step',
+      'create_trip_button',
+      'trip_flow',
+    ]);
   }
 
   String? validateTrip() {
@@ -683,17 +674,9 @@ class TripController extends GetxController {
         ? null
         : double.tryParse(privatePriceController.text.trim());
 
-    if (pickup == null) {
-      return 'يجب تحديد نقطة الانطلاق من الخريطة.';
-    }
-
-    if (destination == null) {
-      return 'يجب تحديد نقطة الوصول من الخريطة.';
-    }
-
-    if (pickup == destination) {
-      return 'يجب تحديد نقطة انطلاق ووصول مختلفتين.';
-    }
+    if (pickup == null) return 'يجب تحديد نقطة الانطلاق من الخريطة.';
+    if (destination == null) return 'يجب تحديد نقطة الوصول من الخريطة.';
+    if (pickup == destination) return 'يجب تحديد نقطة انطلاق ووصول مختلفتين.';
 
     if (departureDateTime.isBefore(now)) {
       return 'لا يسمح بإنشاء رحلة بتاريخ أو وقت يسبق الوقت الحالي.';
@@ -712,9 +695,7 @@ class TripController extends GetxController {
     }
 
     if (allowShared) {
-      if (price <= 0) {
-        return 'يجب إدخال سعر صالح للمقعد المشترك.';
-      }
+      if (price <= 0) return 'يجب إدخال سعر صالح للمقعد المشترك.';
 
       if (sharedMinPrice > 0 &&
           sharedMaxPrice > 0 &&
@@ -765,19 +746,15 @@ class TripController extends GetxController {
 
       if (value == null) {
         storeTripStatusRequest = StatusRequest.failure;
-        Get.snackbar(
-          'خطأ',
-          'لم يتم استلام رد من الخادم',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        Get.snackbar('خطأ', 'لم يتم استلام رد من الخادم',
+            snackPosition: SnackPosition.BOTTOM);
         update(['create_trip_button']);
         return;
       }
 
-      final Map<String, dynamic> responseMap =
-          value.data is Map<String, dynamic>
-              ? value.data as Map<String, dynamic>
-              : <String, dynamic>{};
+      final Map<String, dynamic> responseMap = value.data is Map<String, dynamic>
+          ? value.data as Map<String, dynamic>
+          : <String, dynamic>{};
 
       storeTripResponse = responseMap;
 
@@ -800,12 +777,10 @@ class TripController extends GetxController {
           availableSeats: availableSeats,
           allowShared: allowShared,
           allowPrivate: allowPrivate,
-          sharedSeatPrice: allowShared
-              ? double.parse(priceController.text.trim())
-              : 0.0,
-          privateTripPrice: allowPrivate
-              ? double.tryParse(privatePriceController.text.trim())
-              : null,
+          sharedSeatPrice:
+              allowShared ? double.parse(priceController.text.trim()) : 0.0,
+          privateTripPrice:
+              allowPrivate ? double.tryParse(privatePriceController.text.trim()) : null,
           notes: notesController.text.trim(),
           suggestedPrice: suggestedPrice,
           status: TripStatus.pending,
@@ -815,7 +790,6 @@ class TripController extends GetxController {
           'نجاح',
           message,
           snackPosition: SnackPosition.BOTTOM,
-        //  backgroundColor: Colors.green.shade700,
           colorText: Colors.white,
         );
 

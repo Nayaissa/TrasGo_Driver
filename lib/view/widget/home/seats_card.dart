@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:transport_project/controller/home/tripcontroller.dart';
+import 'package:transport_project/controller/home/trip_create_controller.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
 import 'package:transport_project/view/widget/home/circle_icon_button.dart';
 
@@ -17,7 +17,7 @@ class SeatsCard extends StatelessWidget {
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
-            color: AppColor.primaryColor,
+      color: AppColor.fifthColor,
             borderRadius: BorderRadius.circular(18),
           ),
           child: Row(
