@@ -11,7 +11,7 @@ class DioHelper {
   static void init() {
     dioClient = dio.Dio(
       dio.BaseOptions(
-        baseUrl: 'http://192.168.131.74:8000/api/',
+        baseUrl: 'http://192.168.253.74:8000/api/',
         connectTimeout: Duration(seconds: 50),
         validateStatus: (status) => true,
         receiveDataWhenStatusError: false,
@@ -74,7 +74,7 @@ class DioHelper {
   }
 
   /// POST request with token from shared preferences
-  /// 
+  ///
   static Future<dio.Response?> postsData({
     required String url,
     required Map<String, dynamic> data,

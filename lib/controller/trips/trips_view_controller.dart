@@ -1,19 +1,22 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:transport_project/controller/trips/active_trip_tracking_page.dart';
 import 'package:transport_project/core/class/diohelper.dart';
 import 'package:transport_project/core/class/statusrequest.dart';
 import 'package:transport_project/core/constant/routes.dart';
 import 'package:transport_project/data/model/tab_model.dart';
+import 'package:transport_project/view/screen/trips/active_trip_tracking_page.dart';
 
 abstract class TripsController extends GetxController {
   getTabs();
   getTripsByStatus(String status);
+
   goToDetailsPage(int tripId);
   goToBookingsPage(Map<String, dynamic> trip);
   startTrip(int tripId);
@@ -21,6 +24,8 @@ abstract class TripsController extends GetxController {
 }
 
 class TripsControllerImp extends TripsController {
+  final box = GetStorage();
+
   StatusRequest? getTabStatusRequest;
   StatusRequest? tripActionStatusRequest;
 
@@ -31,6 +36,7 @@ class TripsControllerImp extends TripsController {
 
   List<Map<String, dynamic>> trips = [];
 
+  int? activeTripId;
   Map<String, dynamic>? activeTripData;
   Map<String, dynamic>? trackingData;
 
@@ -43,8 +49,11 @@ class TripsControllerImp extends TripsController {
 
   @override
   void onInit() {
+    box.remove("active_trip_id");
+
     loadCarMarker();
     getTabs();
+    checkActiveTripOnStart();
     super.onInit();
   }
 
@@ -54,12 +63,42 @@ class TripsControllerImp extends TripsController {
     super.onClose();
   }
 
+  void checkActiveTripOnStart() {
+    final savedTripId = box.read("active_trip_id");
+
+    if (savedTripId != null) {
+      activeTripId = int.parse(savedTripId.toString());
+
+      getTrackingData(activeTripId!);
+      startLiveTracking(activeTripId!);
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.offAll(() => const ActiveTripTrackingPage());
+      });
+    }
+  }
+
   Future<void> loadCarMarker() async {
     try {
-      carMarkerIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(56, 56)),
+      final ByteData data = await rootBundle.load(
         "assets/images/car_marker.png",
       );
+
+      final ui.Codec codec = await ui.instantiateImageCodec(
+        data.buffer.asUint8List(),
+        targetWidth: 90,
+      );
+
+      final ui.FrameInfo fi = await codec.getNextFrame();
+
+      final ByteData? byteData = await fi.image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+
+      carMarkerIcon = BitmapDescriptor.fromBytes(
+        byteData!.buffer.asUint8List(),
+      );
+
       update();
     } catch (e) {
       print("CAR MARKER ERROR => $e");
@@ -81,8 +120,10 @@ class TripsControllerImp extends TripsController {
               getTabStatusRequest = StatusRequest.noData;
             } else {
               getTabStatusRequest = StatusRequest.success;
+
               final firstKey = tabModel!.data!.items![selectedTab].key!;
               selectedStatus = firstKey;
+
               getTripsByStatus(firstKey);
             }
           } else {
@@ -107,81 +148,61 @@ class TripsControllerImp extends TripsController {
     }
   }
 
- @override
-void getTripsByStatus(String status) {
-  selectedStatus = status;
+  @override
+  void getTripsByStatus(String status) {
+    selectedStatus = status;
 
-  getTabStatusRequest = StatusRequest.loading;
-  update();
+    getTabStatusRequest = StatusRequest.loading;
+    update();
 
-  final endpointStatus =
-      status == "active" ? "current" : status;
+    final endpointStatus = status == "active" ? "current" : status;
+    final endpoint = "v1/driver/trips/$endpointStatus";
 
-  final endpoint = "v1/driver/trips/$endpointStatus";
+    DioHelper.getDataa(url: endpoint)
+        .then((value) {
+          if (value != null && value.statusCode == 200) {
+            final items = value.data["data"]["items"];
 
-  DioHelper.getDataa(url: endpoint)
-      .then((value) {
-        if (value != null && value.statusCode == 200) {
-          final items = value.data["data"]["items"];
+            if (items == null || items.isEmpty) {
+              trips = [];
+              getTabStatusRequest = StatusRequest.noData;
+            } else {
+              trips = List<Map<String, dynamic>>.from(
+                items.map((trip) {
+                  final card = trip["card"];
 
-          if (items == null || items.isEmpty) {
-            trips = [];
-            getTabStatusRequest = StatusRequest.noData;
+                  return {
+                    "trip_id": trip["trip_id"],
+                    "status": status,
+                    "title": "Trip #${trip["trip_id"]}",
+                    "price": card["shared_price"] ?? 0,
+                    "date": formatDate(card["departure_time"] ?? ""),
+                    "departure_time": card["departure_time"] ?? "",
+                    "from": card["departure_location"] ?? "",
+                    "to": card["arrival_location"] ?? "",
+                    "image":
+                        card["vehicle_image"] == null
+                            ? ""
+                            : "http://192.168.8.74:8000/${card["vehicle_image"]}",
+                    "type": trip["classification"]?["name"] ?? "",
+                  };
+                }),
+              );
+
+              getTabStatusRequest = StatusRequest.success;
+            }
           } else {
-            trips = List<Map<String, dynamic>>.from(
-              items.map((trip) {
-                final card = trip["card"];
-
-                return {
-                  "trip_id": trip["trip_id"],
-
-                  /// نخزن الحالة الأصلية القادمة من التاب
-                  "status": status,
-
-                  "title": "Trip #${trip["trip_id"]}",
-
-                  "price": card["shared_price"] ?? 0,
-
-                  "date": formatDate(
-                    card["departure_time"] ?? "",
-                  ),
-
-                  "departure_time":
-                      card["departure_time"] ?? "",
-
-                  "from":
-                      card["departure_location"] ?? "",
-
-                  "to":
-                      card["arrival_location"] ?? "",
-
-                  "image": card["vehicle_image"] == null
-                      ? ""
-                      : "http://192.168.8.74:8000/${card["vehicle_image"]}",
-
-                  "type":
-                      trip["classification"]?["name"] ?? "",
-                };
-              }),
-            );
-
-            getTabStatusRequest = StatusRequest.success;
+            getTabStatusRequest = StatusRequest.noData;
           }
-        } else {
-          getTabStatusRequest = StatusRequest.noData;
-        }
 
-        update();
-      })
-      .catchError((error) {
-        print("ERROR => $error");
-
-        getTabStatusRequest =
-            StatusRequest.serverfailure;
-
-        update();
-      });
-}
+          update();
+        })
+        .catchError((error) {
+          print("ERROR => $error");
+          getTabStatusRequest = StatusRequest.serverfailure;
+          update();
+        });
+  }
 
   void changeTab(int index) {
     selectedTab = index;
@@ -220,14 +241,11 @@ void getTripsByStatus(String status) {
           print("START RESPONSE => ${value?.data}");
 
           if (value != null && value.data["success"] == true) {
+            activeTripId = tripId;
+            box.write("active_trip_id", tripId);
+
             activeTripData = value.data["data"];
             trackingData = null;
-
-            final currentIndex =
-                tabModel?.data?.items?.indexWhere((e) => e.key == "current") ??
-                -1;
-
-            if (currentIndex != -1) selectedTab = currentIndex;
 
             selectedStatus = "current";
             tripActionStatusRequest = StatusRequest.success;
@@ -268,81 +286,81 @@ void getTripsByStatus(String status) {
   }
 
   @override
-  void endTrip(int tripId, {bool fromTracking = false}) {
+  void endTrip(int tripId, {bool fromTracking = false}) async {
     tripActionStatusRequest = StatusRequest.loading;
     update();
 
-    DioHelper.postsData(url: "v1/driver/trips/$tripId/complete", data: {})
-        .then((value) {
-          print("END STATUS => ${value?.statusCode}");
-          print("END RESPONSE => ${value?.data}");
+    try {
+      final value = await DioHelper.postsData(
+        url: "v1/driver/trips/$tripId/complete",
+        data: {"notes": "وصلنا إلى نقطة النهاية"},
+      );
 
-          if (value != null && value.data["success"] == true) {
-            stopLiveTracking();
+      print("END STATUS => ${value?.statusCode}");
+      print("END RESPONSE => ${value?.data}");
 
-            activeTripData = null;
-            trackingData = null;
-            currentDriverPosition = null;
+      if (value != null && value.data["success"] == true) {
+        stopLiveTracking();
+        box.remove("active_trip_id");
 
-            final completedIndex =
-                tabModel?.data?.items?.indexWhere(
-                  (e) => e.key == "completed",
-                ) ??
-                -1;
+        if (fromTracking) {
+          Get.back();
+        }
 
-            if (completedIndex != -1) selectedTab = completedIndex;
+        activeTripId = null;
+        activeTripData = null;
+        trackingData = null;
+        currentDriverPosition = null;
 
-            selectedStatus = "completed";
-            tripActionStatusRequest = StatusRequest.success;
-            update();
+        selectedStatus = "completed";
+        tripActionStatusRequest = StatusRequest.success;
 
-            if (fromTracking) {
-              Get.back();
-            }
+        getTripsByStatus("completed");
 
-            getTripsByStatus("completed");
+        update();
 
-            Get.snackbar(
-              "Success",
-              value.data["message"] ?? "تم إنهاء الرحلة بنجاح",
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            tripActionStatusRequest = StatusRequest.success;
-            update();
+        Get.snackbar(
+          "Success",
+          value.data["message"] ?? "تم إنهاء الرحلة بنجاح",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        tripActionStatusRequest = StatusRequest.success;
+        update();
 
-            Get.snackbar(
-              "Error",
-              value?.data["message"] ?? "فشل إنهاء الرحلة",
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          }
-        })
-        .catchError((error) {
-          print("END TRIP ERROR => $error");
+        Get.snackbar(
+          "Error",
+          value?.data["message"] ?? "فشل إنهاء الرحلة",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (error) {
+      print("END TRIP ERROR => $error");
 
-          tripActionStatusRequest = StatusRequest.serverfailure;
-          update();
+      tripActionStatusRequest = StatusRequest.serverfailure;
+      update();
 
-          Get.snackbar(
-            "Error",
-            "حدث خطأ أثناء إنهاء الرحلة",
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        });
+      Get.snackbar(
+        "Error",
+        "حدث خطأ أثناء إنهاء الرحلة",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   void startLiveTracking(int tripId) {
+    activeTripId = tripId;
+
     stopLiveTracking();
 
-    getTrackingData(tripId);
     sendDriverLocation(tripId);
+    getTrackingData(tripId);
 
-    trackingTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+    trackingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       getTrackingData(tripId);
     });
 
-    locationTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+    locationTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       sendDriverLocation(tripId);
     });
   }
@@ -385,23 +403,28 @@ void getTripsByStatus(String status) {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation,
+        desiredAccuracy: LocationAccuracy.high,
       );
 
       currentDriverPosition = position;
       update();
 
-      DioHelper.postsData(
-            url: "v1/driver/trips/$tripId/location",
-            data: {
-              "latitude": position.latitude,
-              "longitude": position.longitude,
-              "speed_kmh": position.speed <= 0 ? null : position.speed * 3.6,
-              "heading": position.heading < 0 ? null : position.heading,
-              "accuracy_meters": position.accuracy,
-              "recorded_at": DateTime.now().toIso8601String(),
-            },
-          )
+      final Map<String, dynamic> data = {
+        "latitude": position.latitude,
+        "longitude": position.longitude,
+        "accuracy_meters": position.accuracy,
+        "recorded_at": DateTime.now().toIso8601String(),
+      };
+
+      if (position.speed > 0) {
+        data["speed_kmh"] = position.speed * 3.6;
+      }
+
+      if (position.heading >= 0) {
+        data["heading"] = position.heading;
+      }
+
+      DioHelper.postsData(url: "v1/driver/trips/$tripId/location", data: data)
           .then((value) {
             print("LOCATION STATUS => ${value?.statusCode}");
             print("LOCATION RESPONSE => ${value?.data}");

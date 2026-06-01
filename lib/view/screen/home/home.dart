@@ -17,11 +17,11 @@ class HomeScreen extends StatelessWidget {
           extendBody: true,
           resizeToAvoidBottomInset: false,
           backgroundColor: AppColor.primaryColor,
-          //  const Color(0xFF081225)
           body: SafeArea(
             child: Stack(
               children: [
                 controller.pages.elementAt(controller.currentPage),
+
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: SafeArea(

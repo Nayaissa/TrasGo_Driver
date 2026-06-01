@@ -6,8 +6,32 @@ import 'package:transport_project/controller/trips/trips_view_controller.dart';
 import 'package:transport_project/core/class/statusrequest.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
 
-class ActiveTripTrackingPage extends StatelessWidget {
+class ActiveTripTrackingPage extends StatefulWidget {
   const ActiveTripTrackingPage({super.key});
+
+  @override
+  State<ActiveTripTrackingPage> createState() => _ActiveTripTrackingPageState();
+}
+
+class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
+  GoogleMapController? mapController;
+  LatLng? lastCarPosition;
+
+  @override
+  void dispose() {
+    mapController?.dispose();
+    super.dispose();
+  }
+
+  void _moveCameraToCar(LatLng position) {
+    if (lastCarPosition == position) return;
+
+    lastCarPosition = position;
+
+    mapController?.animateCamera(
+      CameraUpdate.newLatLng(position),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +46,18 @@ class ActiveTripTrackingPage extends StatelessWidget {
           );
         }
 
-        final int tripId = trackingData?["trip_id"] ?? activeTripData?["trip_id"];
+        final int tripId =
+            trackingData?["trip_id"] ?? activeTripData?["trip_id"];
 
-        final Map<String, dynamic> details =
-            Map<String, dynamic>.from(activeTripData?["trip_details"] ?? {});
+        final Map<String, dynamic> details = Map<String, dynamic>.from(
+          activeTripData?["trip_details"] ?? {},
+        );
 
-        final Map<String, dynamic> trip =
-            Map<String, dynamic>.from(trackingData?["trip"] ?? {});
+        final Map<String, dynamic> trip = Map<String, dynamic>.from(
+          trackingData?["trip"] ?? {},
+        );
 
-        final Map<String, dynamic> tracking =
-            Map<String, dynamic>.from(
+        final Map<String, dynamic> tracking = Map<String, dynamic>.from(
           trackingData?["tracking"] ?? details["tracking"] ?? {},
         );
 
@@ -40,7 +66,6 @@ class ActiveTripTrackingPage extends StatelessWidget {
 
         final markers = _buildMarkers(
           tracking: tracking,
-          details: details,
           carIcon: controller.carMarkerIcon,
           currentDriverPosition: controller.currentDriverPosition,
         );
@@ -56,6 +81,17 @@ class ActiveTripTrackingPage extends StatelessWidget {
           currentDriverPosition: controller.currentDriverPosition,
         );
 
+        final carPosition = _getCarPosition(
+          tracking: tracking,
+          currentDriverPosition: controller.currentDriverPosition,
+        );
+
+        if (carPosition != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _moveCameraToCar(carPosition);
+          });
+        }
+
         return Scaffold(
           body: SafeArea(
             child: Stack(
@@ -64,12 +100,26 @@ class ActiveTripTrackingPage extends StatelessWidget {
                   initialCameraPosition: CameraPosition(
                     target: initialPosition,
                     zoom: 16,
+                    bearing: 0,
+                    tilt: 0,
                   ),
+                  onMapCreated: (GoogleMapController googleMapController) {
+                    mapController = googleMapController;
+
+                    if (carPosition != null) {
+                      _moveCameraToCar(carPosition);
+                    }
+                  },
                   markers: markers,
                   polylines: polylines,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
+
+                  // لا نخفي ماركر موقعك الحقيقي
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+
                   zoomControlsEnabled: false,
+                  rotateGesturesEnabled: false,
+                  tiltGesturesEnabled: false,
                 ),
                 Positioned(
                   top: 16,
@@ -84,8 +134,8 @@ class ActiveTripTrackingPage extends StatelessWidget {
                   child: _bottomCard(
                     controller: controller,
                     tripId: tripId,
-                    from: from,
-                    to: to,
+                    from: from.toString(),
+                    to: to.toString(),
                     tracking: tracking,
                     currentDriverPosition: controller.currentDriverPosition,
                   ),
@@ -98,45 +148,39 @@ class ActiveTripTrackingPage extends StatelessWidget {
     );
   }
 
+  LatLng? _getCarPosition({
+    required Map<String, dynamic> tracking,
+    required Position? currentDriverPosition,
+  }) {
+    final lastPosition = tracking["last_position"];
+
+    if (currentDriverPosition != null) {
+      return LatLng(
+        currentDriverPosition.latitude,
+        currentDriverPosition.longitude,
+      );
+    }
+
+    if (lastPosition != null &&
+        lastPosition["latitude"] != null &&
+        lastPosition["longitude"] != null) {
+      final lat = double.tryParse(lastPosition["latitude"].toString());
+      final lng = double.tryParse(lastPosition["longitude"].toString());
+
+      if (lat != null && lng != null) {
+        return LatLng(lat, lng);
+      }
+    }
+
+    return null;
+  }
+
   Set<Marker> _buildMarkers({
     required Map<String, dynamic> tracking,
-    required Map<String, dynamic> details,
     required BitmapDescriptor? carIcon,
     required Position? currentDriverPosition,
   }) {
     final Set<Marker> markers = {};
-
-    final routePoints = tracking["route"]?["points"] as List?;
-    final startResponsePoints = details["points"] as List?;
-    final points = routePoints ?? startResponsePoints;
-
-    if (points != null) {
-      for (var point in points) {
-        final lat = point["latitude"];
-        final lng = point["longitude"];
-
-        if (lat != null && lng != null) {
-          final type = point["type"]?.toString() ?? "";
-
-          markers.add(
-            Marker(
-              markerId: MarkerId("point_${point["point_id"] ?? type}"),
-              position: LatLng(
-                double.parse(lat.toString()),
-                double.parse(lng.toString()),
-              ),
-              icon: type == "start"
-                  ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)
-                  : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-              infoWindow: InfoWindow(
-                title: type == "start" ? "نقطة البداية" : "نقطة النهاية",
-                snippet: point["address"]?.toString(),
-              ),
-            ),
-          );
-        }
-      }
-    }
 
     final lastPosition = tracking["last_position"];
 
@@ -144,18 +188,18 @@ class ActiveTripTrackingPage extends StatelessWidget {
     double? carLng;
     double carHeading = 0;
 
-    if (lastPosition != null &&
+    if (currentDriverPosition != null) {
+      carLat = currentDriverPosition.latitude;
+      carLng = currentDriverPosition.longitude;
+      carHeading =
+          currentDriverPosition.heading < 0 ? 0 : currentDriverPosition.heading;
+    } else if (lastPosition != null &&
         lastPosition["latitude"] != null &&
         lastPosition["longitude"] != null) {
       carLat = double.tryParse(lastPosition["latitude"].toString());
       carLng = double.tryParse(lastPosition["longitude"].toString());
       carHeading =
           double.tryParse(lastPosition["heading"]?.toString() ?? "0") ?? 0;
-    } else if (currentDriverPosition != null) {
-      carLat = currentDriverPosition.latitude;
-      carLng = currentDriverPosition.longitude;
-      carHeading =
-          currentDriverPosition.heading < 0 ? 0 : currentDriverPosition.heading;
     }
 
     if (carLat != null && carLng != null) {
@@ -164,10 +208,13 @@ class ActiveTripTrackingPage extends StatelessWidget {
           markerId: const MarkerId("driver_car"),
           position: LatLng(carLat, carLng),
           icon: carIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          rotation: carHeading,
-          anchor: const Offset(0.5, 0.5),
-          flat: true,
+              BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen,
+              ),
+          anchor: const Offset(0.5, 1.0),
+          flat: false,
+          rotation: 0,
+          zIndex: 10,
           infoWindow: const InfoWindow(title: "موقع السائق"),
         ),
       );
@@ -192,29 +239,6 @@ class ActiveTripTrackingPage extends StatelessWidget {
           points: _decodePolyline(routePolyline.toString()),
           width: 5,
           color: AppColor.fourthColor,
-        ),
-      );
-    }
-
-    final history = trackingData?["tracking"]?["history"]?["items"] as List?;
-
-    if (history != null && history.length > 1) {
-      final historyPoints = history
-          .where((item) => item["latitude"] != null && item["longitude"] != null)
-          .map(
-            (item) => LatLng(
-              double.parse(item["latitude"].toString()),
-              double.parse(item["longitude"].toString()),
-            ),
-          )
-          .toList();
-
-      polylines.add(
-        Polyline(
-          polylineId: const PolylineId("driver_history"),
-          points: historyPoints,
-          width: 4,
-          color: Colors.green,
         ),
       );
     }
@@ -251,6 +275,7 @@ class ActiveTripTrackingPage extends StatelessWidget {
 
     if (points != null && points.isNotEmpty) {
       final first = points.first;
+
       return LatLng(
         double.parse(first["latitude"].toString()),
         double.parse(first["longitude"].toString()),
@@ -418,17 +443,29 @@ class ActiveTripTrackingPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("من",
-                        style: TextStyle(color: Colors.white54, fontSize: 12)),
-                    Text(from,
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
+                    const Text(
+                      "من",
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                    ),
+                    Text(
+                      from,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 10),
-                    const Text("إلى",
-                        style: TextStyle(color: Colors.white54, fontSize: 12)),
-                    Text(to,
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
+                    const Text(
+                      "إلى",
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                    ),
+                    Text(
+                      to,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -511,14 +548,17 @@ class ActiveTripTrackingPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style:
-                        const TextStyle(color: Colors.white54, fontSize: 11)),
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
                 Text(
                   value,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -532,7 +572,10 @@ class ActiveTripTrackingPage extends StatelessWidget {
     return Container(
       width: 11,
       height: 11,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
     );
   }
 }

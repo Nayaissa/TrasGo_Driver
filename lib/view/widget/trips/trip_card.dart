@@ -28,9 +28,7 @@ class TripCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = _formatSyriaTime(
-      data["date"]?.toString(),
-    );
+    final formattedDate = _formatSyriaTime(data["date"]?.toString());
 
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -38,10 +36,7 @@ class TripCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
         gradient: const LinearGradient(
-          colors: [
-            AppColor.fifthColor,
-            AppColor.secondaryColor,
-          ],
+          colors: [AppColor.fifthColor, AppColor.fifthColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -76,10 +71,7 @@ class TripCard extends StatelessWidget {
                   ),
                   const Text(
                     "EST.EARNINGS",
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 10,
-                    ),
+                    style: TextStyle(color: Colors.white38, fontSize: 10),
                   ),
                 ],
               ),
@@ -91,16 +83,11 @@ class TripCard extends StatelessWidget {
             children: [
               Text(
                 formattedDate,
-                style: const TextStyle(
-                  color: Colors.white60,
-                ),
+                style: const TextStyle(color: Colors.white60),
               ),
               const Text(
                 "Departure",
-                style: TextStyle(
-                  color: Colors.white60,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.white60, fontSize: 12),
               ),
             ],
           ),
@@ -121,30 +108,21 @@ class TripCard extends StatelessWidget {
       child: Stack(
         children: [
           image.isEmpty
-              ? ImagePlaceHolder(
-                  width: 0.0,
-                  height: 150,
-                )
+              ? ImagePlaceHolder(width: 0.0, height: 150)
               : Image.network(
-                  image,
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) {
-                    return ImagePlaceHolder(
-                      width: 0.0,
-                      height: 150,
-                    );
-                  },
-                ),
+                image,
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) {
+                  return ImagePlaceHolder(width: 0.0, height: 150);
+                },
+              ),
           Container(
             height: 150,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.6),
-                ],
+                colors: [Colors.transparent, Colors.black.withOpacity(0.6)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -154,16 +132,10 @@ class TripCard extends StatelessWidget {
             top: 10,
             left: 10,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 5,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [
-                    AppColor.thirdColor,
-                    AppColor.fourthColor,
-                  ],
+                  colors: [AppColor.thirdColor, AppColor.fourthColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -191,11 +163,7 @@ class TripCard extends StatelessWidget {
         Column(
           children: [
             _dot(Colors.blueAccent),
-            Container(
-              width: 2,
-              height: 30,
-              color: Colors.white24,
-            ),
+            Container(width: 2, height: 30, color: Colors.white24),
             _dot(Colors.red),
           ],
         ),
@@ -206,34 +174,22 @@ class TripCard extends StatelessWidget {
             children: [
               const Text(
                 "ORIGIN",
-                style: TextStyle(
-                  color: Colors.white60,
-                  fontSize: 10,
-                ),
+                style: TextStyle(color: Colors.white60, fontSize: 10),
               ),
               const SizedBox(height: 2),
               Text(
                 data["from"]?.toString() ?? "",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 10),
               const Text(
                 "DESTINATION",
-                style: TextStyle(
-                  color: Colors.white60,
-                  fontSize: 10,
-                ),
+                style: TextStyle(color: Colors.white60, fontSize: 10),
               ),
               const SizedBox(height: 2),
               Text(
                 data["to"]?.toString() ?? "",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ],
           ),
@@ -246,36 +202,56 @@ class TripCard extends StatelessWidget {
     return Container(
       width: 10,
       height: 10,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
-Widget _button() {
-  final status = data["status"]?.toString();
 
-  /// فقط الرحلات النشطة يظهر لها زر بدء الرحلة
-  final bool canStartTrip =
-      status == "active";
+  Widget _button() {
+    final status = data["status"]?.toString();
 
-  return GetBuilder<TripsControllerImp>(
-    builder: (controller) {
-      final bool isLoading =
-          controller.tripActionStatusRequest
-                  ?.toString()
-                  .contains("loading") ??
-              false;
+    /// فقط الرحلات النشطة يظهر لها زر بدء الرحلة
+    final bool canStartTrip = status == "active";
 
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: CustomAuthButton(
-                  text: "Trip Details",
+    return GetBuilder<TripsControllerImp>(
+      builder: (controller) {
+        final bool isLoading =
+            controller.tripActionStatusRequest?.toString().contains(
+              "loading",
+            ) ??
+            false;
 
-                  onPressed: () {
+        return Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: CustomAuthButton(
+                    text: "Trip Details",
+
+                    onPressed: () {
+                      final tripId = data["trip_id"];
+
+                      if (tripId == null) {
+                        Get.snackbar(
+                          "Error",
+                          "Trip id not found",
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+
+                        return;
+                      }
+
+                      controller.goToDetailsPage(int.parse(tripId.toString()));
+                    },
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                InkWell(
+                  borderRadius: BorderRadius.circular(25),
+
+                  onTap: () {
                     final tripId = data["trip_id"];
 
                     if (tripId == null) {
@@ -288,122 +264,89 @@ Widget _button() {
                       return;
                     }
 
-                    controller.goToDetailsPage(
-                      int.parse(tripId.toString()),
-                    );
+                    controller.goToBookingsPage(data);
                   },
+
+                  child: Container(
+                    width: 50,
+                    height: 50,
+
+                    decoration: const BoxDecoration(
+                      color: Colors.white10,
+                      shape: BoxShape.circle,
+                    ),
+
+                    child: const Icon(Icons.receipt_long, color: Colors.white),
+                  ),
                 ),
-              ),
+              ],
+            ),
 
-              const SizedBox(width: 10),
+            /// زر بدء الرحلة فقط
+            if (canStartTrip) ...[
+              const SizedBox(height: 10),
 
-              InkWell(
-                borderRadius: BorderRadius.circular(25),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
 
-                onTap: () {
-                  final tripId = data["trip_id"];
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(
+                      color: AppColor.fourthColor,
+                      width: 1.5,
+                    ),
 
-                  if (tripId == null) {
-                    Get.snackbar(
-                      "Error",
-                      "Trip id not found",
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
 
-                    return;
-                  }
-
-                  controller.goToBookingsPage(data);
-                },
-
-                child: Container(
-                  width: 50,
-                  height: 50,
-
-                  decoration: const BoxDecoration(
-                    color: Colors.white10,
-                    shape: BoxShape.circle,
+                    foregroundColor: Colors.white,
                   ),
 
-                  child: const Icon(
-                    Icons.receipt_long,
-                    color: Colors.white,
+                  icon:
+                      isLoading
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(
+                            Icons.play_arrow,
+                            color: AppColor.fourthColor,
+                          ),
+
+                  label: const Text(
+                    "بدء الرحلة",
+
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
+
+                  onPressed:
+                      isLoading
+                          ? null
+                          : () {
+                            final tripId = data["trip_id"];
+
+                            if (tripId == null) {
+                              Get.snackbar(
+                                "Error",
+                                "Trip id not found",
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+
+                              return;
+                            }
+
+                            controller.startTrip(int.parse(tripId.toString()));
+                          },
                 ),
               ),
             ],
-          ),
-
-          /// زر بدء الرحلة فقط
-          if (canStartTrip) ...[
-            const SizedBox(height: 10),
-
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(
-                    color: AppColor.fourthColor,
-                    width: 1.5,
-                  ),
-
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-
-                  foregroundColor: Colors.white,
-                ),
-
-                icon: isLoading
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Icon(
-                        Icons.play_arrow,
-                        color: AppColor.fourthColor,
-                      ),
-
-                label: const Text(
-                  "بدء الرحلة",
-
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-
-                onPressed: isLoading
-                    ? null
-                    : () {
-                        final tripId = data["trip_id"];
-
-                        if (tripId == null) {
-                          Get.snackbar(
-                            "Error",
-                            "Trip id not found",
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
-
-                          return;
-                        }
-
-                        controller.startTrip(
-                          int.parse(tripId.toString()),
-                        );
-                      },
-              ),
-            ),
           ],
-        ],
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 }

@@ -13,6 +13,7 @@ class BottomNavBar extends StatelessWidget {
       (Icons.home_rounded, 'home'.tr),
       (Icons.compare_arrows_rounded, 'trips'.tr),
       (Icons.person_2_outlined, 'profile'.tr),
+      (Icons.report_problem_outlined, 'complaints'.tr),
       (Icons.account_balance_wallet_outlined, 'earnings'.tr),
     ];
 
@@ -22,35 +23,34 @@ class BottomNavBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF0C1731).withOpacity(.96),
         borderRadius: BorderRadius.circular(26),
-        // boxShadow: const [
-        //   BoxShadow(
-        //     color: Colors.black38,
-        //     blurRadius: 20,
-        //     offset: Offset(0, 8),
-        //   ),
-        // ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(items.length, (index) {
           final selected = controller.currentPage == index;
           final item = items[index];
+
           return GestureDetector(
             onTap: () => controller.changePage(index),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              width: selected ? 84 : 76,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+              width: selected ? 64 : 58,
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 5,
+              ),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient:
-                    selected
-                        ? const LinearGradient(
-                          colors: [Color(0xFF6E88FF), Color(0xFFD08DFF)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        )
-                        : null,
+                gradient: selected
+                    ? const LinearGradient(
+                        colors: [
+                          Color(0xFF6E88FF),
+                          Color(0xFFD08DFF),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
                 color: selected ? null : Colors.transparent,
               ),
               child: Column(

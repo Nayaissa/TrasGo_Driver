@@ -137,6 +137,7 @@ class MyTranslation extends Translations {
           'shared_trip': 'Shared',
           'shared_trip_desc':
               'Optimized for individual seat bookings',
+              'complaints': 'Complaints',
 
           // Months
           'jan': 'Jan',
@@ -302,6 +303,8 @@ class MyTranslation extends Translations {
           'oct': 'أكت',
           'nov': 'نوف',
           'dec': 'ديس',
+          // الشكاوى
+          'complaints': 'الشكاوى',
         },
       };
 }
