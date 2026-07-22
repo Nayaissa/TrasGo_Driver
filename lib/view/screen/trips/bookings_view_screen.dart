@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:transport_project/controller/trips/bookings_controller.dart';
 import 'package:transport_project/core/class/statusrequest.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
+import 'package:transport_project/view/widget/trips/custom_appar.dart';
 
 class BookingRequestsPage extends StatelessWidget {
   const BookingRequestsPage({super.key});
@@ -20,40 +21,38 @@ class BookingRequestsPage extends StatelessWidget {
             return Stack(
               children: [
                 SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 18, 24, 130),
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 130),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Header(),
-                      const SizedBox(height: 42),
+                      const CustomAppbar(),
+                      const SizedBox(height: 10),
 
-                      const Text(
-                        'OPERATIONS CENTER',
-                        style: TextStyle(
-                          color: Color(0xffdbe3ff),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 3,
-                        ),
-                      ),
-
+                      // const Text(
+                      //   'OPERATIONS CENTER',
+                      //   style: TextStyle(
+                      //     color: Color(0xffdbe3ff),
+                      //     fontSize: 12,
+                      //     fontWeight: FontWeight.w900,
+                      //     letterSpacing: 3,
+                      //   ),
+                      // ),
                       const SizedBox(height: 12),
 
                       const Text(
-                        'Booking\nRequests',
+                        'طلبات الحجز',
                         style: TextStyle(
                           color: Color(0xffedf2ff),
-                          fontSize: 46,
+                          fontSize: 25,
                           height: .96,
                           fontWeight: FontWeight.w900,
-                          letterSpacing: -2,
+                          letterSpacing: 2,
                         ),
                       ),
 
                       const SizedBox(height: 30),
 
-                      const SizedBox(height: 40),
-
+                      // const SizedBox(height: 40),
                       const Filters(),
 
                       const SizedBox(height: 50),

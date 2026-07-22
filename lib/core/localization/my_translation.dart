@@ -138,6 +138,15 @@ class MyTranslation extends Translations {
           'shared_trip_desc':
               'Optimized for individual seat bookings',
               'complaints': 'Complaints',
+              'manage_trips': 'Manage Trips',
+'no_trips': 'No Trips',
+'trip_details': 'Trip Details',
+'departure': 'Departure',
+'origin': 'Origin',
+'est_earnings': 'EST. EARNINGS',
+'start_trip': 'Start Trip',
+'trip_not_found': 'Trip id not found',
+'trip': 'Trip',
 
           // Months
           'jan': 'Jan',
@@ -305,6 +314,16 @@ class MyTranslation extends Translations {
           'dec': 'ديس',
           // الشكاوى
           'complaints': 'الشكاوى',
+          //الرحلات 
+          'manage_trips': 'إدارة الرحلات',
+'no_trips': 'لا توجد رحلات',
+'trip_details': 'تفاصيل الرحلة',
+'departure': 'موعد الانطلاق',
+'origin': 'نقطة الانطلاق',
+'est_earnings': 'الأرباح المتوقعة',
+'start_trip': 'بدء الرحلة',
+'trip_not_found': 'لم يتم العثور على معرف الرحلة',
+'trip': 'الرحلة',
         },
       };
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:transport_project/controller/profile/driver_profile_controller.dart';
 import 'package:transport_project/controller/home/home_screen_controller.dart';
 import 'package:transport_project/core/constant/AppColor.dart';
 import 'package:transport_project/view/widget/home/bottom_nav_bar.dart';
@@ -9,8 +10,16 @@ class HomeScreen extends StatelessWidget {
 
   final HomeScreenController controller = Get.put(HomeScreenController());
 
+  void _initControllers() {
+    if (!Get.isRegistered<DriverProfileControllerImp>()) {
+      Get.put(DriverProfileControllerImp(), permanent: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _initControllers();
+
     return GetBuilder<HomeScreenController>(
       builder: (controller) {
         return Scaffold(

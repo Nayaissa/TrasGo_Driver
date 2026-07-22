@@ -28,9 +28,7 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
 
     lastCarPosition = position;
 
-    mapController?.animateCamera(
-      CameraUpdate.newLatLng(position),
-    );
+    mapController?.animateCamera(CameraUpdate.newLatLng(position));
   }
 
   @override
@@ -207,10 +205,9 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
         Marker(
           markerId: const MarkerId("driver_car"),
           position: LatLng(carLat, carLng),
-          icon: carIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+          icon:
+              carIcon ??
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
           anchor: const Offset(0.5, 1.0),
           flat: false,
           rotation: 0,
@@ -328,7 +325,7 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColor.secondaryColor.withOpacity(0.95),
+        color: AppColor.primaryColor.withOpacity(0.95),
         borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
@@ -402,11 +399,12 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
 
     final lastPosition = tracking["last_position"];
 
-    final speed = currentDriverPosition != null
-        ? (currentDriverPosition.speed <= 0
-            ? "--"
-            : (currentDriverPosition.speed * 3.6).toStringAsFixed(2))
-        : lastPosition?["speed_kmh"]?.toString() ?? "--";
+    final speed =
+        currentDriverPosition != null
+            ? (currentDriverPosition.speed <= 0
+                ? "--"
+                : (currentDriverPosition.speed * 3.6).toStringAsFixed(2))
+            : lastPosition?["speed_kmh"]?.toString() ?? "--";
 
     final hasLiveLocation =
         currentDriverPosition != null || tracking["has_live_location"] == true;
@@ -414,7 +412,7 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColor.secondaryColor.withOpacity(0.97),
+        color: AppColor.primaryColor.withOpacity(0.97),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
@@ -497,30 +495,32 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
             height: 52,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
+                backgroundColor: AppColor.thirdColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(26),
                 ),
               ),
-              icon: isLoading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Icon(Icons.stop_circle_outlined),
+              icon:
+                  isLoading
+                      ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                      : const Icon(Icons.stop_circle_outlined),
               label: const Text(
                 "إنهاء الرحلة",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              onPressed: isLoading
-                  ? null
-                  : () {
-                      controller.endTrip(tripId, fromTracking: true);
-                    },
+              onPressed:
+                  isLoading
+                      ? null
+                      : () {
+                        controller.endTrip(tripId, fromTracking: true);
+                      },
             ),
           ),
         ],
@@ -572,10 +572,7 @@ class _ActiveTripTrackingPageState extends State<ActiveTripTrackingPage> {
     return Container(
       width: 11,
       height: 11,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }

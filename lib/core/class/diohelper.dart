@@ -11,7 +11,7 @@ class DioHelper {
   static void init() {
     dioClient = dio.Dio(
       dio.BaseOptions(
-        baseUrl: 'http://192.168.253.74:8000/api/',
+        baseUrl: 'https://alkhader.softup.agency/api/',
         connectTimeout: Duration(seconds: 50),
         validateStatus: (status) => true,
         receiveDataWhenStatusError: false,
@@ -47,7 +47,7 @@ class DioHelper {
       dioClient!.options.headers = {
         'Accept': 'application/json',
         'Authorization':
-            'Bearer 26|rYcQEMIrCJSJ5JnZkcOxtFGV906hPdSzoIupG5qubc5a4ff9',
+            'Bearer $token',
       };
 
       return await dioClient?.get(url, queryParameters: query);
@@ -86,7 +86,7 @@ class DioHelper {
       dioClient!.options.headers = {
         'Accept': 'application/json',
         'Authorization':
-            'Bearer 26|rYcQEMIrCJSJ5JnZkcOxtFGV906hPdSzoIupG5qubc5a4ff9',
+            'Bearer $token',
       };
 
       return await dioClient?.post(url, queryParameters: query, data: data);
@@ -99,7 +99,7 @@ class DioHelper {
   /// POST request with token from shared preferences
   static Future<dio.Response?> patchData({
     required String url,
-    required Map<String, dynamic> data,
+     Map<String, dynamic>? data,
     Map<String, dynamic>? query,
   }) async {
     try {
@@ -107,8 +107,7 @@ class DioHelper {
 
       dioClient!.options.headers = {
         'Accept': 'application/json',
-        'Authorization':
-            'Bearer 21|RRkD1DZd6x85pfjERLoJdipjC3dJI6lxa80O97pz34781742',
+        'Authorization': 'Bearer $token',
       };
 
       return await dioClient?.patch(url, queryParameters: query, data: data);

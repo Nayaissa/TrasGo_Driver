@@ -183,7 +183,7 @@ class TripsControllerImp extends TripsController {
                     "image":
                         card["vehicle_image"] == null
                             ? ""
-                            : "http://192.168.8.74:8000/${card["vehicle_image"]}",
+                            : "https://alkhader.softup.agency/api/${card["vehicle_image"]}",
                     "type": trip["classification"]?["name"] ?? "",
                   };
                 }),
@@ -193,7 +193,13 @@ class TripsControllerImp extends TripsController {
             }
           } else {
             getTabStatusRequest = StatusRequest.noData;
-          }
+
+        Get.snackbar(
+          "Error",
+          "انتهت صلاحية تسجيل الدخول",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
 
           update();
         })

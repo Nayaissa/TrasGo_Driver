@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transport_project/core/class/diohelper.dart';
@@ -7,19 +8,23 @@ import 'package:transport_project/core/services/service.dart';
 import 'package:transport_project/data/model/login_model.dart';
 
 abstract class LoginController extends GetxController {
-  login() {}
-  goToForget() {}
+  login();
+  goToForget();
 }
 
 class LoginControllerImp extends LoginController {
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
+
   late TextEditingController email;
   late TextEditingController password;
+
   bool? isshowpassword = true;
+  bool isPasswordVisible = false;
+
   MyServices myServices = Get.find();
+
   StatusRequest? statusRequest;
   LoginModel? loginModel;
-  bool isPasswordVisible = false;
 
   void togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;
@@ -34,66 +39,96 @@ class LoginControllerImp extends LoginController {
   @override
   login() async {
     var formdata = formstate.currentState;
+
     if (formdata!.validate()) {
       statusRequest = StatusRequest.loading;
       update();
 
-      DioHelper.postsData(
-            url: 'v1/driver/login',
-            data: {'email': email.text, 'password': password.text},
-          )
-          .then((value) {
-            print(value!.data);
+      try {
+        final value = await DioHelper.postsData(
+          url: 'v1/driver/login',
+          data: {
+            'email': email.text,
+            'password': password.text,
+          },
+        );
 
-            if (value.statusCode == 200) {
-              loginModel = LoginModel.fromJson(value.data);
+        print("LOGIN RESPONSE => ${value?.data}");
+        print("LOGIN STATUS CODE => ${value?.statusCode}");
 
-              myServices.sharedPreferences.setString(
-                'userid',
-                loginModel!.data!.user!.userId.toString(),
-              );
-              myServices.sharedPreferences.setString(
-                'username',
-                loginModel!.data!.user!.fullName!,
-              );
-              myServices.sharedPreferences.setString(
-                'token',
-                loginModel!.data!.token ?? '',
-              );
-              myServices.sharedPreferences.setString('step', '2');
+        if (value != null && value.statusCode == 200) {
+          loginModel = LoginModel.fromJson(value.data);
 
-              statusRequest = StatusRequest.success;
+          final String userid =
+              loginModel?.data?.user?.userId?.toString() ?? "";
 
-              Get.snackbar(
-                'success_title'.tr,
-                loginModel!.message ?? 'login_success'.tr,
-              );
+          final String username =
+              loginModel?.data?.user?.fullName?.toString() ?? "";
 
-              Get.offNamed(AppRoute.homepage);
+          final String token =
+              loginModel?.data?.token?.toString() ?? "";
 
-              update();
-            } else {
-              loginModel = LoginModel.fromJson(value.data);
-              statusRequest = StatusRequest.failure;
+          await myServices.sharedPreferences.setString(
+            'userid',
+            userid,
+          );
 
-              Get.snackbar(
-                'warning_title'.tr,
-                loginModel!.message ?? 'login_failed'.tr,
-              );
+          await myServices.sharedPreferences.setString(
+            'username',
+            username,
+          );
 
-              update();
-            }
-          })
-          .catchError((error) {
-            print(error.toString());
-            statusRequest = StatusRequest.serverfailure;
+          await myServices.sharedPreferences.setString(
+            'token',
+            token,
+          );
 
-            Get.snackbar('error_title'.tr, 'server_error'.tr);
+          await myServices.sharedPreferences.setString(
+            'step',
+            '2',
+          );
 
-            update();
-          });
+          if (userid.isNotEmpty) {
+            await FirebaseMessaging.instance.subscribeToTopic(userid);
+          }
 
-      update();
+          await FirebaseMessaging.instance.subscribeToTopic("drivers");
+          await FirebaseMessaging.instance.subscribeToTopic("user_2");
+
+
+          statusRequest = StatusRequest.success;
+          update();
+
+          Get.snackbar(
+            'success_title'.tr,
+            loginModel?.message ?? 'login_success'.tr,
+          );
+
+          Get.offAllNamed(AppRoute.homepage);
+        } else {
+          if (value?.data != null) {
+            loginModel = LoginModel.fromJson(value!.data);
+          }
+
+          statusRequest = StatusRequest.failure;
+          update();
+
+          Get.snackbar(
+            'warning_title'.tr,
+            loginModel?.message ?? 'login_failed'.tr,
+          );
+        }
+      } catch (error) {
+        print("LOGIN ERROR => $error");
+
+        statusRequest = StatusRequest.serverfailure;
+        update();
+
+        Get.snackbar(
+          'error_title'.tr,
+          'server_error'.tr,
+        );
+      }
     }
   }
 

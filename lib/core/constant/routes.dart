@@ -16,5 +16,11 @@ class AppRoute {
   static const String detailsTrip = '/detailsTrip';
   static const String bookingsTrip = '/bookingsTrip';
   static const String bookingsdetails = '/bookingsdetails';
+  // complaint
+  static const String addcomplaint = '/addcomplaint';
+  // wallet
+  static const String wallet = '/wallet';
+  // notification
+    static const String notification = '/notification';
 
 }

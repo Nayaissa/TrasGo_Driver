@@ -46,11 +46,12 @@ class TripCard extends StatelessWidget {
         children: [
           _image(),
           const SizedBox(height: 14),
+
           Row(
             children: [
               Expanded(
                 child: Text(
-                  ' الرحلة : ${data["title"]?.toString()}',
+                  '${"trip".tr} : ${data["title"]?.toString() ?? ""}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -69,15 +70,17 @@ class TripCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Text(
-                    "EST.EARNINGS",
-                    style: TextStyle(color: Colors.white38, fontSize: 10),
+                  Text(
+                    "est_earnings".tr,
+                    style: const TextStyle(color: Colors.white38, fontSize: 10),
                   ),
                 ],
               ),
             ],
           ),
+
           const SizedBox(height: 6),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -85,12 +88,13 @@ class TripCard extends StatelessWidget {
                 formattedDate,
                 style: const TextStyle(color: Colors.white60),
               ),
-              const Text(
-                "Departure",
-                style: TextStyle(color: Colors.white60, fontSize: 12),
+              Text(
+                "departure".tr,
+                style: const TextStyle(color: Colors.white60, fontSize: 12),
               ),
             ],
           ),
+
           const SizedBox(height: 16),
           _route(),
           const SizedBox(height: 18),
@@ -118,6 +122,7 @@ class TripCard extends StatelessWidget {
                   return ImagePlaceHolder(width: 0.0, height: 150);
                 },
               ),
+
           Container(
             height: 150,
             decoration: BoxDecoration(
@@ -128,6 +133,7 @@ class TripCard extends StatelessWidget {
               ),
             ),
           ),
+
           Positioned(
             top: 10,
             left: 10,
@@ -167,24 +173,28 @@ class TripCard extends StatelessWidget {
             _dot(Colors.red),
           ],
         ),
+
         const SizedBox(width: 10),
+
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "ORIGIN",
-                style: TextStyle(color: Colors.white60, fontSize: 10),
+              Text(
+                "origin".tr,
+                style: const TextStyle(color: Colors.white60, fontSize: 10),
               ),
               const SizedBox(height: 2),
               Text(
                 data["from"]?.toString() ?? "",
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
+
               const SizedBox(height: 10),
-              const Text(
-                "DESTINATION",
-                style: TextStyle(color: Colors.white60, fontSize: 10),
+
+              Text(
+                "destination".tr,
+                style: const TextStyle(color: Colors.white60, fontSize: 10),
               ),
               const SizedBox(height: 2),
               Text(
@@ -209,7 +219,6 @@ class TripCard extends StatelessWidget {
   Widget _button() {
     final status = data["status"]?.toString();
 
-    /// فقط الرحلات النشطة يظهر لها زر بدء الرحلة
     final bool canStartTrip = status == "active";
 
     return GetBuilder<TripsControllerImp>(
@@ -226,15 +235,14 @@ class TripCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomAuthButton(
-                    text: "Trip Details",
-
+                    text: "trip_details".tr,
                     onPressed: () {
                       final tripId = data["trip_id"];
 
                       if (tripId == null) {
                         Get.snackbar(
-                          "Error",
-                          "Trip id not found",
+                          "error_title".tr,
+                          "trip_not_found".tr,
                           snackPosition: SnackPosition.BOTTOM,
                         );
 
@@ -250,14 +258,13 @@ class TripCard extends StatelessWidget {
 
                 InkWell(
                   borderRadius: BorderRadius.circular(25),
-
                   onTap: () {
                     final tripId = data["trip_id"];
 
                     if (tripId == null) {
                       Get.snackbar(
-                        "Error",
-                        "Trip id not found",
+                        "error_title".tr,
+                        "trip_not_found".tr,
                         snackPosition: SnackPosition.BOTTOM,
                       );
 
@@ -266,63 +273,54 @@ class TripCard extends StatelessWidget {
 
                     controller.goToBookingsPage(data);
                   },
-
                   child: Container(
                     width: 50,
                     height: 50,
-
                     decoration: const BoxDecoration(
                       color: Colors.white10,
                       shape: BoxShape.circle,
                     ),
-
                     child: const Icon(Icons.receipt_long, color: Colors.white),
                   ),
                 ),
               ],
             ),
 
-            /// زر بدء الرحلة فقط
             if (canStartTrip) ...[
               const SizedBox(height: 10),
 
               SizedBox(
                 width: double.infinity,
                 height: 48,
-
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(
                       color: AppColor.fourthColor,
                       width: 1.5,
                     ),
-
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
-
                     foregroundColor: Colors.white,
                   ),
-
                   icon:
                       isLoading
                           ? const SizedBox(
                             width: 18,
                             height: 18,
-
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                           : const Icon(
                             Icons.play_arrow,
                             color: AppColor.fourthColor,
                           ),
-
-                  label: const Text(
-                    "بدء الرحلة",
-
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  label: Text(
+                    "start_trip".tr,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
                   ),
-
                   onPressed:
                       isLoading
                           ? null
@@ -331,8 +329,8 @@ class TripCard extends StatelessWidget {
 
                             if (tripId == null) {
                               Get.snackbar(
-                                "Error",
-                                "Trip id not found",
+                                "error_title".tr,
+                                "trip_not_found".tr,
                                 snackPosition: SnackPosition.BOTTOM,
                               );
 

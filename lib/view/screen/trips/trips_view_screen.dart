@@ -23,8 +23,8 @@ class TripsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomAppbar(),
-                const SizedBox(height: 20),
-                TitleSection(subTitle: "Manage Trips", title: "Manage Trips"),
+                // const SizedBox(height: 20),
+                TitleSection(subTitle: "manage_trips".tr, title: "".tr),
                 tabs(controller),
                 const SizedBox(height: 10),
                 Expanded(child: _tripsList(controller)),
@@ -94,8 +94,8 @@ class TripsPage extends StatelessWidget {
     }
 
     if (controller.trips.isEmpty) {
-      return const Center(
-        child: Text("No Trips", style: TextStyle(color: Colors.white)),
+      return Center(
+        child: Text("no_trips".tr, style: const TextStyle(color: Colors.white)),
       );
     }
 

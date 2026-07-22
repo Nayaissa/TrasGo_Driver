@@ -14,21 +14,22 @@ import 'package:transport_project/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    await initializeDateFormatting(); 
-      await GetStorage.init();
 
-await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
- await FirebaseMessaging.instance.requestPermission(
+  await initializeDateFormatting();
+  await GetStorage.init();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await FirebaseMessaging.instance.requestPermission(
     alert: true,
     badge: true,
     sound: true,
   );
-  DioHelper.init();
-  await initalSevices();
 
   DioHelper.init();
+  await initalSevices();
 
   runApp(const MyApp());
 }
@@ -36,7 +37,6 @@ await Firebase.initializeApp(
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     LocalController controller = Get.put(LocalController());
@@ -45,20 +45,34 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: controller.language,
       translations: MyTranslation(),
-      fallbackLocale: Locale('ar'),
-      
+      fallbackLocale: const Locale('ar'),
+
       theme: ThemeData.light().copyWith(
+        textTheme: ThemeData.light().textTheme.apply(
+          fontFamily: 'serif',
+        ),
+        primaryTextTheme: ThemeData.light().primaryTextTheme.apply(
+          fontFamily: 'serif',
+        ),
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
         cardColor: Colors.grey[100],
         hintColor: Colors.black54,
       ),
+
       darkTheme: ThemeData.dark().copyWith(
+        textTheme: ThemeData.dark().textTheme.apply(
+          fontFamily: 'serif',
+        ),
+        primaryTextTheme: ThemeData.dark().primaryTextTheme.apply(
+          fontFamily: 'serif',
+        ),
         primaryColor: Colors.blueAccent,
         scaffoldBackgroundColor: const Color(0xFF090B19),
         cardColor: Colors.white.withOpacity(0.05),
         hintColor: Colors.white54,
       ),
+
       themeMode: ThemeMode.dark,
       initialBinding: InitialBinding(),
       initialRoute: '/',
